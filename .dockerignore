@@ -1,0 +1,6 @@
+node_modules
+.next
+.git
+.env*
+Spec_*.md
+Workshop_*.pdf

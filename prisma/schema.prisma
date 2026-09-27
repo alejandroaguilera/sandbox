@@ -1,0 +1,161 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Dimension {
+  DIRECCION
+  COMERCIAL
+  OPERACION
+  ADMIN_FINANZAS
+  PERSONAS
+  EXPERIENCIA_DIGITAL
+}
+
+enum Tamano {
+  T1_10
+  T11_50
+  T51_250
+  T250_MAS
+}
+
+enum EstadoReq {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+}
+
+model SalaRespuesta {
+  id        String    @id @default(cuid())
+  dimension Dimension
+  tamano    Tamano
+  proceso   String    @db.VarChar(160)
+  oculto    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+}
+
+model Lead {
+  id                String   @id @default(cuid())
+  nombre            String
+  empresa           String
+  correo            String
+  whatsapp          String?
+  tamano            Tamano
+  giro              String?
+  procesoDoloroso   String?
+  quiereDiagnostico Boolean  @default(false)
+  consentimiento    Boolean
+  createdAt         DateTime @default(now())
+}
+
+model Requisicion {
+  id              String        @id @default(cuid())
+  folio           Int           @unique
+  solicitante     String
+  area            String
+  articulo        String
+  cantidad        Int
+  montoEstimado   Decimal       @db.Decimal(12, 2)
+  motivo          String?
+  estado          EstadoReq     @default(PENDIENTE)
+  tokenAprobacion String        @unique
+  resumeUrl       String?
+  createdAt       DateTime      @default(now())
+  resueltaAt      DateTime?
+  eventos         EventoFlujo[]
+}
+
+model EventoFlujo {
+  id            String       @id @default(cuid())
+  requisicionId String?
+  requisicion   Requisicion? @relation(fields: [requisicionId], references: [id], onDelete: Cascade)
+  paso          String
+  detalle       String?
+  createdAt     DateTime     @default(now())
+
+  @@index([createdAt])
+}
+
+model Correo {
+  id             String   @id @default(cuid())
+  para           String
+  asunto         String
+  cuerpo         String
+  accionAprobar  String?
+  accionRechazar String?
+  leido          Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model Gasto {
+  id        String    @id @default(cuid())
+  fecha     DateTime?
+  proveedor String?
+  rfc       String?
+  subtotal  Decimal?  @db.Decimal(12, 2)
+  iva       Decimal?  @db.Decimal(12, 2)
+  total     Decimal?  @db.Decimal(12, 2)
+  categoria String
+  confianza Float
+  revisar   Boolean
+  origen    String // "ia" | "error" | "ejemplo"
+  createdAt DateTime  @default(now())
+}
+
+model Config {
+  clave String @id
+  valor String
+}
+
+// Demo 3: empresa ficticia
+model Cliente {
+  id       Int       @id
+  nombre   String
+  giro     String
+  ciudad   String
+  ventas   Venta[]
+  facturas Factura[]
+}
+
+model Producto {
+  id        Int     @id
+  nombre    String
+  categoria String
+  precio    Decimal @db.Decimal(12, 2)
+  costo     Decimal @db.Decimal(12, 2)
+  ventas    Venta[]
+}
+
+model Venta {
+  id         Int      @id @default(autoincrement())
+  fecha      DateTime
+  clienteId  Int
+  productoId Int
+  cantidad   Int
+  precioUnit Decimal  @db.Decimal(12, 2)
+  costoUnit  Decimal  @db.Decimal(12, 2)
+  cliente    Cliente  @relation(fields: [clienteId], references: [id])
+  producto   Producto @relation(fields: [productoId], references: [id])
+
+  @@index([fecha])
+  @@index([clienteId])
+}
+
+model Factura {
+  id        Int       @id @default(autoincrement())
+  clienteId Int
+  fecha     DateTime
+  vence     DateTime
+  monto     Decimal   @db.Decimal(12, 2)
+  pagadaAt  DateTime?
+  cliente   Cliente   @relation(fields: [clienteId], references: [id])
+
+  @@index([clienteId])
+}

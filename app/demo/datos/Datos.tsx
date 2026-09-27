@@ -1,4 +1,5 @@
 "use client";
+import { dispositivo } from "@/lib/dispositivo";
 import { useState } from "react";
 import Grafica from "./Grafica";
 import type { Respuesta } from "@/lib/datos";
@@ -18,7 +19,7 @@ export default function Datos({ preguntas }: { preguntas: string[] }) {
     setPreguntaActual(t);
     setR(null);
     try {
-      const res = await fetch("/api/datos/preguntar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pregunta: t }) });
+      const res = await fetch("/api/datos/preguntar", { method: "POST", headers: { "Content-Type": "application/json", ...dispositivo() }, body: JSON.stringify({ pregunta: t }) });
       const j = await res.json();
       if (!res.ok) throw new Error(j.error || "No se pudo responder");
       setR(j);

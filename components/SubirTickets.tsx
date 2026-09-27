@@ -1,4 +1,5 @@
 "use client";
+import { dispositivo } from "@/lib/dispositivo";
 import { useRef, useState } from "react";
 
 export interface GastoFila {
@@ -60,7 +61,7 @@ export default function SubirTickets({
         try {
           const fd = new FormData();
           fd.append("imagen", await reducir(f), "ticket.jpg");
-          const r = await fetch("/api/gastos/procesar", { method: "POST", body: fd });
+          const r = await fetch("/api/gastos/procesar", { method: "POST", body: fd, headers: dispositivo() });
           const j = await r.json().catch(() => ({}));
           if (!r.ok && !j.gasto) setError(j.error || "No se pudo subir una imagen");
           onResultado?.(j);

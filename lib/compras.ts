@@ -20,7 +20,7 @@ export async function evento(requisicionId: string | null, paso: string, detalle
   await prisma.eventoFlujo.create({ data: { requisicionId, paso, detalle } });
 }
 
-export async function registrar(s: Solicitud) {
+export async function registrar(s: Solicitud, pausaMs = 0) {
   for (let intento = 0; intento < 5; intento++) {
     const ultimo = await prisma.requisicion.aggregate({ _max: { folio: true } });
     const folio = Math.max(1000, ultimo._max.folio ?? 1000) + 1;
@@ -29,6 +29,7 @@ export async function registrar(s: Solicitud) {
         data: { ...s, motivo: s.motivo || null, folio, tokenAprobacion: randomBytes(16).toString("hex") },
       });
       await evento(req.id, "Solicitud recibida", `${s.solicitante} · ${s.area}`);
+      if (pausaMs) await pausa(pausaMs);
       await evento(req.id, "Registrada en hoja de control", `Folio ${folio}`);
       return req;
     } catch (e) {
@@ -91,7 +92,7 @@ export async function avisoSolicitante(reqId: string) {
 
 // ---- Modo directo: la app corre el mismo flujo que n8n, con 1 s entre pasos para que se vea.
 export async function flujoDirecto(s: Solicitud) {
-  const req = await registrar(s);
+  const req = await registrar(s, 1000);
   (async () => {
     try {
       await pausa(1000);

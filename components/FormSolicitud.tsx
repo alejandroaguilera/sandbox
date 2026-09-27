@@ -1,4 +1,5 @@
 "use client";
+import { dispositivo } from "@/lib/dispositivo";
 import { useState } from "react";
 
 const INICIAL = { solicitante: "", area: "", articulo: "", cantidad: "1", montoEstimado: "", motivo: "" };
@@ -20,7 +21,7 @@ export default function FormSolicitud({ compacto = false }: { compacto?: boolean
     try {
       const r = await fetch("/api/compras/solicitar", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...dispositivo() },
         body: JSON.stringify({ ...f, montoEstimado: f.montoEstimado.replace(/[$,\s]/g, "") }),
       });
       const j = await r.json().catch(() => ({}));

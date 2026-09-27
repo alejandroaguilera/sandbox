@@ -22,8 +22,18 @@ export function permitido(clave: string, max: number, ventanaMs: number): boolea
   return true;
 }
 
+/**
+ * En el salón muchos asistentes comparten la IP pública del wifi del hotel, así que el límite
+ * fino (max) va por dispositivo (header x-dispositivo, id aleatorio del navegador) y por IP solo
+ * aplica un tope amplio. Sin header (bots, curl) el límite fino cae sobre la IP.
+ */
 export function limite(req: Request, ruta: string, max: number, ventanaMs: number) {
-  if (permitido(`${ruta}:${ipDe(req)}`, max, ventanaMs)) return null;
+  const ip = ipDe(req);
+  const disp = req.headers.get("x-dispositivo") ?? "";
+  const ok = /^[a-z0-9]{16,40}$/.test(disp)
+    ? permitido(`${ruta}:ip:${ip}`, Math.max(200, max * 40), ventanaMs) && permitido(`${ruta}:d:${disp}`, max, ventanaMs)
+    : permitido(`${ruta}:ip:${ip}`, max, ventanaMs);
+  if (ok) return null;
   return NextResponse.json(
     { error: "Demasiados envíos. Intenta de nuevo en unos minutos." },
     { status: 429 },

@@ -1,4 +1,5 @@
 "use client";
+import { dispositivo } from "@/lib/dispositivo";
 import Link from "next/link";
 import { useState } from "react";
 import { DIMENSIONES, TAMANOS } from "@/lib/constantes";
@@ -22,7 +23,7 @@ export default function FormSala() {
     try {
       const r = await fetch("/api/sala", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...dispositivo() },
         body: JSON.stringify({ dimension, tamano, proceso, sitio }),
       });
       const j = await r.json().catch(() => ({}));

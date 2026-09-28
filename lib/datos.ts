@@ -168,8 +168,9 @@ export function calcularAgregados(f: Fuente, hoy = new Date()) {
 }
 export type Agregados = ReturnType<typeof calcularAgregados>;
 
-let cacheAgg: { t: number; data: Agregados } | null = null;
+const gAgg = globalThis as unknown as { __sbxAgg?: { t: number; data: Agregados } };
 export async function agregados(): Promise<Agregados> {
+  const cacheAgg = gAgg.__sbxAgg;
   if (cacheAgg && Date.now() - cacheAgg.t < 5 * 60 * 1000) return cacheAgg.data;
   const [clientes, productos, ventas, facturas] = await Promise.all([
     prisma.cliente.findMany(),
@@ -183,7 +184,7 @@ export async function agregados(): Promise<Agregados> {
     ventas: ventas.map((v) => ({ ...v, precioUnit: Number(v.precioUnit), costoUnit: Number(v.costoUnit) })),
     facturas: facturas.map((x) => ({ ...x, monto: Number(x.monto) })),
   });
-  cacheAgg = { t: Date.now(), data };
+  gAgg.__sbxAgg = { t: Date.now(), data };
   return data;
 }
 

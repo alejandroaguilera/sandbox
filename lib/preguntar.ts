@@ -1,8 +1,10 @@
 import { responderDatos } from "./ai";
 import { agregados, precalculada, preguntaParecida, PREGUNTAS, Respuesta } from "./datos";
 
-const cache = new Map<number, Respuesta>();
-const enCurso = new Map<number, Promise<Respuesta | null>>();
+// En globalThis: instrumentation.ts (warm-up) y las rutas se empaquetan por separado y no comparten módulos.
+const g = globalThis as unknown as { __sbxCache?: Map<number, Respuesta>; __sbxEnCurso?: Map<number, Promise<Respuesta | null>> };
+const cache = (g.__sbxCache ??= new Map<number, Respuesta>());
+const enCurso = (g.__sbxEnCurso ??= new Map<number, Promise<Respuesta | null>>());
 
 function indiceExacto(q: string) {
   const n = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ¿?¡!]/g, "").trim();

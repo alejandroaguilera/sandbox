@@ -51,7 +51,7 @@ export default function FormMaterial() {
         <p className="gris" style={{ fontSize: 18, marginBottom: 36 }}>Descarga tu material:</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <a className="boton bloque" href="/material/laminas.pdf" download>Láminas (PDF)</a>
-          <a className="boton bloque secundario" href="/material/cuadernillo.pdf" download>Cuadernillo de trabajo (PDF)</a>
+          <a className="boton bloque secundario" href="/material/cuadernillo.docx" download="Cuadernillo_Workshop_Coparmex_MrHapps.docx">Cuadernillo de trabajo (Word)</a>
         </div>
         {diag && <p className="gris" style={{ fontSize: 16, marginTop: 32 }}>Te contactaremos con información del Diagnóstico de Madurez Digital.</p>}
       </div>

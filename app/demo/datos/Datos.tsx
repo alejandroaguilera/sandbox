@@ -1,8 +1,11 @@
 "use client";
 import { dispositivo } from "@/lib/dispositivo";
-import { useState } from "react";
-import Grafica from "./Grafica";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import type { Respuesta } from "@/lib/datos";
+
+// Recharts se carga aparte para que la carga inicial de la página sea ligera.
+const Grafica = dynamic(() => import("./Grafica"), { ssr: false, loading: () => <div style={{ height: 300 }} /> });
 
 export default function Datos({ preguntas }: { preguntas: string[] }) {
   const [q, setQ] = useState("");
@@ -10,6 +13,10 @@ export default function Datos({ preguntas }: { preguntas: string[] }) {
   const [r, setR] = useState<Respuesta | null>(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    import("./Grafica");
+  }, []);
 
   async function preguntar(texto: string) {
     const t = texto.trim();

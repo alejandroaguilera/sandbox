@@ -75,7 +75,7 @@ export default function Panel({ modo, cache, conteos, leads, sala }: Props) {
       </div>
       <div className="tarjeta" style={{ overflowX: "auto", padding: 8 }}>
         <table className="tabla">
-          <thead><tr><th>Fecha</th><th>Nombre</th><th>Empresa</th><th>Correo</th><th>WhatsApp</th><th>Tamaño</th><th>Giro</th><th>Proceso</th><th>Diagnóstico</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Nombre</th><th>Empresa</th><th>Correo</th><th>WhatsApp</th><th>Tamaño</th><th>Giro</th><th>Proceso</th><th>Diagnóstico</th><th></th></tr></thead>
           <tbody>
             {leads.map((l) => (
               <tr key={l.id} className={l.diagnostico ? "fila-diag" : ""}>
@@ -83,9 +83,15 @@ export default function Panel({ modo, cache, conteos, leads, sala }: Props) {
                 <td>{l.nombre}</td><td>{l.empresa}</td><td>{l.correo}</td><td>{l.whatsapp ?? ""}</td>
                 <td>{l.tamano}</td><td>{l.giro ?? ""}</td><td>{l.proceso ?? ""}</td>
                 <td>{l.diagnostico ? <b className="azul">Sí</b> : "No"}</td>
+                <td>
+                  <button className="boton secundario" style={{ padding: "6px 14px", fontSize: 14 }} disabled={ocupado}
+                    onClick={async () => { if (!window.confirm(`¿Borrar el lead de ${l.nombre}?`)) return; await fetch(`/api/admin/leads?id=${l.id}`, { method: "DELETE" }); router.refresh(); }}>
+                    Borrar
+                  </button>
+                </td>
               </tr>
             ))}
-            {!leads.length && <tr><td colSpan={9} className="gris">Sin leads todavía</td></tr>}
+            {!leads.length && <tr><td colSpan={10} className="gris">Sin leads todavía</td></tr>}
           </tbody>
         </table>
       </div>

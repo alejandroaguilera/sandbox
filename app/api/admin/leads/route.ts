@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { exigeAdmin } from "@/lib/admin";
 import { TAMANOS } from "@/lib/constantes";
@@ -30,4 +31,12 @@ export async function GET() {
       "Content-Disposition": `attachment; filename="leads-sandbox-${new Date().toISOString().slice(0, 10)}.csv"`,
     },
   });
+}
+
+export async function DELETE(req: Request) {
+  const noAuth = await exigeAdmin();
+  if (noAuth) return noAuth;
+  const id = new URL(req.url).searchParams.get("id") ?? "";
+  await prisma.lead.deleteMany({ where: { id } });
+  return NextResponse.json({ ok: true });
 }

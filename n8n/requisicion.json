@@ -1,0 +1,272 @@
+{
+  "name": "Requisición de compra",
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "Webhook · Nueva solicitud",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "5d6f1c8e-requisicion-sandbox-0001",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "requisicion",
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_ID__",
+          "name": "Sandbox · llave compartida"
+        }
+      }
+    },
+    {
+      "id": "n2",
+      "name": "HTTP · Registrar en hoja de control",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://sandbox.mrhapps.mx/api/compras/registrar",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_ID__",
+          "name": "Sandbox · llave compartida"
+        }
+      }
+    },
+    {
+      "id": "n3",
+      "name": "HTTP · Correo al gerente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://sandbox.mrhapps.mx/api/correo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ tipo: \"gerente\", folio: $json.folio, accionAprobar: $execution.resumeUrl + ($execution.resumeUrl.includes(\"?\") ? \"&\" : \"?\") + \"decision=aprobar\", accionRechazar: $execution.resumeUrl + ($execution.resumeUrl.includes(\"?\") ? \"&\" : \"?\") + \"decision=rechazar\" }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_ID__",
+          "name": "Sandbox · llave compartida"
+        }
+      }
+    },
+    {
+      "id": "n4",
+      "name": "Wait · Esperar aprobación",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        300
+      ],
+      "webhookId": "5d6f1c8e-requisicion-sandbox-0002",
+      "parameters": {
+        "resume": "webhook",
+        "httpMethod": "GET",
+        "limitWaitTime": true,
+        "limitType": "afterTimeInterval",
+        "resumeAmount": 12,
+        "resumeUnit": "hours",
+        "options": {}
+      }
+    },
+    {
+      "id": "n5",
+      "name": "IF · ¿Aprobada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.query.decision }}",
+              "rightValue": "aprobar",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "n6",
+      "name": "HTTP · Actualizar estado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://sandbox.mrhapps.mx/api/compras/estado",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ folio: $('HTTP · Registrar en hoja de control').item.json.folio, decision: $('Wait · Esperar aprobación').item.json.query.decision === \"aprobar\" ? \"aprobar\" : \"rechazar\" }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_ID__",
+          "name": "Sandbox · llave compartida"
+        }
+      }
+    },
+    {
+      "id": "n7",
+      "name": "HTTP · Avisar al solicitante",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://sandbox.mrhapps.mx/api/correo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ tipo: \"solicitante\", folio: $('HTTP · Registrar en hoja de control').item.json.folio }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_ID__",
+          "name": "Sandbox · llave compartida"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook · Nueva solicitud": {
+      "main": [
+        [
+          {
+            "node": "HTTP · Registrar en hoja de control",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP · Registrar en hoja de control": {
+      "main": [
+        [
+          {
+            "node": "HTTP · Correo al gerente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP · Correo al gerente": {
+      "main": [
+        [
+          {
+            "node": "Wait · Esperar aprobación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait · Esperar aprobación": {
+      "main": [
+        [
+          {
+            "node": "IF · ¿Aprobada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF · ¿Aprobada?": {
+      "main": [
+        [
+          {
+            "node": "HTTP · Actualizar estado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP · Actualizar estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP · Actualizar estado": {
+      "main": [
+        [
+          {
+            "node": "HTTP · Avisar al solicitante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  }
+}

@@ -92,7 +92,7 @@ export default function Compras() {
           <div className="panel-cuerpo sin-relleno">
             <table className="hoja">
               <thead>
-                <tr><th className="hoja-n"></th><th>Folio</th><th className="col-fecha">Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
+                <tr><th className="hoja-n"></th><th>Folio</th><th className="col-fecha">Fecha</th><th className="col-solic">Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
               </thead>
               <tbody>
                 {e?.requisiciones.map((r, i) => (
@@ -100,7 +100,7 @@ export default function Compras() {
                     <td className="hoja-n">{i + 1}</td>
                     <td style={{ fontWeight: 700 }}>{r.folio}</td>
                     <td className="gris col-fecha">{fechaCorta(r.createdAt)}</td>
-                    <td className="hoja-texto" title={r.solicitante}>{r.solicitante}</td>
+                    <td className="hoja-texto col-solic" title={r.solicitante}>{r.solicitante}</td>
                     <td className="hoja-texto" title={`${r.cantidad} × ${r.articulo}`}>{r.cantidad} × {r.articulo}</td>
                     <td className="num">{$(r.montoEstimado)}</td>
                     <td><span className={`pildora ${r.estado}`}>{ESTADO[r.estado]}</span></td>

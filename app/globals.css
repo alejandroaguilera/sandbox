@@ -124,7 +124,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
 .qr-caja .qr-texto { display: flex; flex-direction: column; gap: 4px; min-width: 0; line-height: 1.25; }
 .qr-caja .qr-eyebrow { color: var(--azul); font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
 .qr-caja .qr-texto b { color: var(--texto); font-size: 26px; }
-.qr-caja .qr-url { color: var(--gris); font-size: 17px; overflow-wrap: anywhere; }
+.qr-caja .qr-url { color: var(--gris); font-size: 17px; }
 .pildora { display: inline-block; border-radius: 980px; padding: 4px 14px; font-size: 0.8em; font-weight: 600; white-space: nowrap; }
 .pildora.PENDIENTE { background: #3a3000; color: var(--ambar); }
 .pildora.APROBADA { background: #0b3a1a; color: var(--verde); }
@@ -194,13 +194,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
 .paso.rechazo .paso-hora { color: var(--rojo); }
 .paso-extra { font-size: 15px; margin: 12px 0 0; }
 
-.compras-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) 56px minmax(0, 1.45fr) 56px minmax(0, 1.1fr); height: clamp(520px, calc(100vh - 420px), 760px); }
+.compras-grid { display: grid; grid-template-columns: minmax(0, 0.85fr) 72px minmax(0, 1.45fr) 72px minmax(0, 1.1fr); height: clamp(520px, calc(100vh - 480px), 760px); }
 .panel { background: var(--tarjeta); border-radius: 22px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; border: 1px solid #262628; }
 .panel-cab { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--linea); background: #19191b; flex: none; }
 .panel-icono { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex: none; }
-.panel-icono.form { background: #0a2540; color: var(--azul); }
-.panel-icono.hoja { background: #0b3a1a; color: var(--verde); }
-.panel-icono.correo { background: #3a3000; color: var(--ambar); }
+.panel-icono.ico-form { background: #0a2540; color: var(--azul); }
+.panel-icono.ico-hoja { background: #0b3a1a; color: var(--verde); }
+.panel-icono.ico-correo { background: #3a3000; color: var(--ambar); }
 .panel-app { font-size: 20px; font-weight: 700; }
 .panel-contexto { font-size: 15px; color: var(--gris); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .panel-cuerpo { flex: 1; min-height: 0; overflow: auto; padding: 18px; font-size: 18px; }
@@ -209,7 +209,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
 .panel-cuerpo .campo > label { font-size: 16px; }
 .conector { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--gris); }
 .conector-flecha { width: 36px; height: 36px; border-radius: 50%; background: var(--tarjeta-2); color: var(--azul); display: grid; place-items: center; font-size: 20px; font-weight: 700; }
-.conector-texto { font-size: 12px; text-align: center; line-height: 1.2; text-transform: uppercase; letter-spacing: .04em; }
+.conector-texto { font-size: 13px; text-align: center; line-height: 1.2; }
+@media (max-width: 1500px) { .hoja .col-fecha { display: none; } .hoja-texto { max-width: 120px; } }
 
 .hoja { width: 100%; border-collapse: collapse; font-size: 17px; table-layout: auto; }
 .hoja th { position: sticky; top: 0; background: var(--tarjeta-2); color: var(--gris); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--linea); border-right: 1px solid #3a3a3c80; white-space: nowrap; }

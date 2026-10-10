@@ -11,7 +11,12 @@ export async function Qr({ ruta, titulo, texto }: { ruta: string; titulo: string
         <div className="qr-texto">
           <span className="qr-eyebrow">Escanea con tu celular</span>
           <b>{titulo}</b>
-          <span className="qr-url">{texto ?? url.replace(/^https?:\/\//, "")}</span>
+          <span className="qr-url">
+            {/* Corta la URL solo en las diagonales, nunca a media palabra. */}
+            {(texto ?? url.replace(/^https?:\/\//, "")).split("/").map((t, i) => (
+              <span key={i}>{i > 0 && <>/<wbr /></>}{t}</span>
+            ))}
+          </span>
         </div>
       </div>
       {/* En el celular un QR no sirve: se muestra un botón a la misma ruta. */}

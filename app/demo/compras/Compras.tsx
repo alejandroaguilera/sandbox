@@ -92,14 +92,14 @@ export default function Compras() {
           <div className="panel-cuerpo sin-relleno">
             <table className="hoja">
               <thead>
-                <tr><th className="hoja-n"></th><th>Folio</th><th>Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
+                <tr><th className="hoja-n"></th><th>Folio</th><th className="col-fecha">Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
               </thead>
               <tbody>
                 {e?.requisiciones.map((r, i) => (
                   <tr key={r.id} className="entra">
                     <td className="hoja-n">{i + 1}</td>
                     <td style={{ fontWeight: 700 }}>{r.folio}</td>
-                    <td className="gris">{fechaCorta(r.createdAt)}</td>
+                    <td className="gris col-fecha">{fechaCorta(r.createdAt)}</td>
                     <td className="hoja-texto" title={r.solicitante}>{r.solicitante}</td>
                     <td className="hoja-texto" title={`${r.cantidad} × ${r.articulo}`}>{r.cantidad} × {r.articulo}</td>
                     <td className="num">{$(r.montoEstimado)}</td>
@@ -158,7 +158,7 @@ function Panel({ n, icono, app, contexto, children }: { n: number; icono: "form"
   return (
     <section className="panel">
       <header className="panel-cab">
-        <span className={`panel-icono ${icono}`}><Icono tipo={icono} /></span>
+        <span className={`panel-icono ico-${icono}`}><Icono tipo={icono} /></span>
         <div style={{ minWidth: 0 }}>
           <div className="panel-app"><span className="gris">{n} ·</span> {app}</div>
           <div className="panel-contexto">{contexto}</div>

@@ -44,7 +44,7 @@ export default function EnVivo() {
   const actual = procesos.length ? procesos[i % procesos.length] : null;
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.35fr) minmax(0, 1fr)", gap: 48, alignItems: "start" }}>
+    <div className="envivo-grid">
       <div>
         {DIMENSIONES.map((d) => {
           const n = r?.dimensiones[d.id] ?? 0;
@@ -75,14 +75,14 @@ export default function EnVivo() {
 
       <div>
         <div className="tarjeta" style={{ textAlign: "center", padding: "28px 24px", marginBottom: 24 }}>
-          <div style={{ fontSize: 132, fontWeight: 700, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{total}</div>
+          <div className="envivo-total">{total}</div>
           <div className="gris" style={{ fontSize: 26, marginTop: 8 }}>respuestas{sinRed && <span className="rojo"> · reconectando…</span>}</div>
         </div>
         <div className="tarjeta" style={{ minHeight: 300, display: "flex", flexDirection: "column", justifyContent: "center", padding: 36 }}>
           {actual ? (
             <div key={`${actual.id}-${i}`} className="entra">
               <div className="azul" style={{ fontSize: 22, fontWeight: 600, marginBottom: 14 }}>{nombreDim[actual.dimension]}</div>
-              <div style={{ fontSize: 44, fontWeight: 700, lineHeight: 1.15 }}>“{actual.proceso}”</div>
+              <div className="envivo-cita">“{actual.proceso}”</div>
             </div>
           ) : (
             <div className="gris" style={{ fontSize: 30, textAlign: "center" }}>Escanea el código y cuéntanos…</div>

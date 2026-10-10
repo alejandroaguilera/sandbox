@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { Bar, BarChart, LabelList, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import type { Respuesta } from "@/lib/datos";
 
@@ -18,30 +19,45 @@ function formateador(formato: string) {
   };
 }
 
+// En celular la gráfica se compacta: etiquetas más chicas y menos espacio reservado.
+function useAngosto() {
+  const [angosto, setAngosto] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 700px)");
+    const f = () => setAngosto(mq.matches);
+    f();
+    mq.addEventListener("change", f);
+    return () => mq.removeEventListener("change", f);
+  }, []);
+  return angosto;
+}
+
 export default function Grafica({ g }: { g: Respuesta["grafica"] }) {
+  const angosto = useAngosto();
+  const letra = angosto ? 12 : 18;
   const n = Math.min(g.etiquetas.length, g.valores.length, g.tipo === "barras" ? 10 : 36);
   const data = Array.from({ length: n }, (_, i) => ({ k: g.etiquetas[i], v: g.valores[i] }));
   const fmt = formateador(g.formato);
 
   if (g.tipo === "linea") {
     return (
-      <ResponsiveContainer width="100%" height={420}>
-        <LineChart data={data} margin={{ top: 30, right: 30, left: 10, bottom: 10 }}>
-          <XAxis dataKey="k" stroke={GRIS} tick={{ fill: GRIS, fontSize: 18 }} tickLine={false} axisLine={{ stroke: "#3a3a3c" }} />
-          <YAxis stroke={GRIS} tick={{ fill: GRIS, fontSize: 18 }} tickFormatter={fmt} tickLine={false} axisLine={false} width={120} />
-          <Line type="monotone" dataKey="v" stroke={AZUL} strokeWidth={4} dot={{ r: 5, fill: AZUL }} isAnimationActive />
+      <ResponsiveContainer width="100%" height={angosto ? 260 : 420}>
+        <LineChart data={data} margin={angosto ? { top: 16, right: 12, left: 0, bottom: 4 } : { top: 30, right: 30, left: 10, bottom: 10 }}>
+          <XAxis dataKey="k" stroke={GRIS} tick={{ fill: GRIS, fontSize: letra }} tickLine={false} axisLine={{ stroke: "#3a3a3c" }} />
+          <YAxis stroke={GRIS} tick={{ fill: GRIS, fontSize: letra }} tickFormatter={fmt} tickLine={false} axisLine={false} width={angosto ? 64 : 120} />
+          <Line type="monotone" dataKey="v" stroke={AZUL} strokeWidth={angosto ? 3 : 4} dot={{ r: angosto ? 3 : 5, fill: AZUL }} isAnimationActive />
         </LineChart>
       </ResponsiveContainer>
     );
   }
-  const alto = Math.max(260, n * 52 + 20);
+  const alto = angosto ? Math.max(200, n * 36 + 12) : Math.max(260, n * 52 + 20);
   return (
     <ResponsiveContainer width="100%" height={alto}>
-      <BarChart data={data} layout="vertical" margin={{ top: 4, right: 130, left: 0, bottom: 4 }} barCategoryGap={10}>
+      <BarChart data={data} layout="vertical" margin={{ top: 4, right: angosto ? 72 : 130, left: 0, bottom: 4 }} barCategoryGap={angosto ? 6 : 10}>
         <XAxis type="number" hide />
-        <YAxis type="category" dataKey="k" width={300} stroke={GRIS} tick={{ fill: "#F5F5F7", fontSize: 19 }} tickLine={false} axisLine={false} interval={0} />
+        <YAxis type="category" dataKey="k" width={angosto ? 110 : 300} stroke={GRIS} tick={{ fill: "#F5F5F7", fontSize: angosto ? 12 : 19 }} tickLine={false} axisLine={false} interval={0} />
         <Bar dataKey="v" fill={AZUL} radius={[0, 8, 8, 0]} isAnimationActive>
-          <LabelList dataKey="v" position="right" formatter={(v: unknown) => fmt(Number(v))} style={{ fill: "#F5F5F7", fontSize: 19, fontWeight: 600 }} />
+          <LabelList dataKey="v" position="right" formatter={(v: unknown) => fmt(Number(v))} style={{ fill: "#F5F5F7", fontSize: angosto ? 12 : 19, fontWeight: 600 }} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>

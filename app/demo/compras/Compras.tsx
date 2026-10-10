@@ -55,26 +55,27 @@ export default function Compras() {
 
   return (
     <>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 0.8fr) minmax(0, 1.35fr) minmax(0, 1fr)", gap: 24, alignItems: "start" }}>
+      <div className="compras-grid">
         <section className="tarjeta" style={{ fontSize: 18 }}>
-          <h3 style={{ fontSize: 24, marginBottom: 16 }}>1 · Solicitud</h3>
+          <h3 className="seccion-titulo" style={{ marginBottom: 16 }}>1 · Solicitud</h3>
           <FormSolicitud compacto />
         </section>
 
         <section className="tarjeta" style={{ padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <h3 style={{ fontSize: 24 }}>2 · Hoja de control</h3>
+            <h3 className="seccion-titulo">2 · Hoja de control</h3>
             <span className="pildora modo">{e?.modo === "n8n" ? "Flujo: n8n" : "Flujo: directo"}</span>
           </div>
-          <table className="tabla" style={{ fontSize: 20 }}>
+          <div className="tabla-scroll">
+          <table className="tabla tabla-media">
             <thead>
-              <tr><th>Folio</th><th>Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
+              <tr><th>Folio</th><th className="solo-ancho">Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
             </thead>
             <tbody>
               {e?.requisiciones.map((r) => (
                 <tr key={r.id} className="entra">
                   <td style={{ fontWeight: 700 }}>{r.folio}</td>
-                  <td className="gris">{fechaCorta(r.createdAt)}</td>
+                  <td className="gris solo-ancho">{fechaCorta(r.createdAt)}</td>
                   <td>{r.solicitante}</td>
                   <td>{r.cantidad} × {r.articulo}</td>
                   <td className="num">{$(r.montoEstimado)}</td>
@@ -86,17 +87,18 @@ export default function Compras() {
               )}
             </tbody>
           </table>
+          </div>
         </section>
 
         <section className="tarjeta" style={{ padding: 20 }}>
-          <h3 style={{ fontSize: 24, marginBottom: 12 }}>3 · Bandeja de correo</h3>
+          <h3 className="seccion-titulo" style={{ marginBottom: 12 }}>3 · Bandeja de correo</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 560, overflow: "auto" }}>
             {e?.correos.map((c) => {
               const folio = Number(c.asunto.match(/\d{4,}/)?.[0]);
               const esperando = c.conBotones && !c.leido && pendientes.includes(folio);
               return (
                 <div key={c.id} className="entra" style={{ background: "var(--tarjeta-2)", borderRadius: 14, padding: 16, borderLeft: esperando ? "4px solid var(--azul)" : "4px solid transparent" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 16 }} className="gris">
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", fontSize: 16 }} className="gris">
                     <span>Para: <b style={{ color: "var(--texto)" }}>{c.para}</b></span>
                     <span>{hora(c.createdAt)}</span>
                   </div>
@@ -123,18 +125,18 @@ export default function Compras() {
 
       <section style={{ marginTop: 28 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 14 }}>
-          <h3 style={{ fontSize: 24 }}>Línea de tiempo</h3>
+          <h3 className="seccion-titulo">Línea de tiempo</h3>
           {e?.actual && <span className="gris" style={{ fontSize: 20 }}>Folio {e.actual.folio}</span>}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${pasos.length}, 1fr)`, gap: 12 }}>
+        <div className="linea-tiempo" style={{ "--pasos": pasos.length } as React.CSSProperties}>
           {pasos.map((p, k) => {
             const ev = eventos.find((x) => x.paso === p);
             const siguiente = !ev && (k === 0 || eventos.some((x) => x.paso === pasos[k - 1]));
             return (
               <div key={p} style={{ position: "relative" }}>
                 <div style={{ height: 6, borderRadius: 3, background: ev ? (p === "Rechazada" ? "var(--rojo)" : "var(--azul)") : "var(--tarjeta-2)", marginBottom: 12, transition: "background .4s" }} />
-                <div className={siguiente && eventos.length ? "pulso" : ""} style={{ fontSize: 20, fontWeight: 600, color: ev ? "var(--texto)" : "var(--gris)" }}>{p}</div>
-                <div style={{ fontSize: 18, fontVariantNumeric: "tabular-nums", color: ev ? "var(--azul)" : "transparent" }}>{ev ? hora(ev.createdAt) : "—"}</div>
+                <div className={`paso-nombre ${siguiente && eventos.length ? "pulso" : ""}`} style={{ color: ev ? "var(--texto)" : "var(--gris)" }}>{p}</div>
+                <div className="paso-hora" style={{ color: ev ? "var(--azul)" : "transparent" }}>{ev ? hora(ev.createdAt) : "—"}</div>
               </div>
             );
           })}

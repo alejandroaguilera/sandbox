@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic";
 
 export default function Page() {
   return (
-    <div className="proyector" style={{ fontSize: 22 }}>
-      <div className="encabezado" style={{ marginBottom: 24 }}>
+    <div className="proyector proyector-compras">
+      <div className="encabezado">
         <div>
           <h1>Requisición de compra, sin WhatsApp</h1>
           <p className="sub">Solicitud → hoja de control → aprobación por correo → aviso. Automático.</p>

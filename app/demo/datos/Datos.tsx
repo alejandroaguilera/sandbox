@@ -39,32 +39,33 @@ export default function Datos({ preguntas }: { preguntas: string[] }) {
 
   return (
     <div>
-      <form onSubmit={(e) => { e.preventDefault(); preguntar(q); }} style={{ display: "flex", gap: 16, marginBottom: 16 }}>
+      <form onSubmit={(e) => { e.preventDefault(); preguntar(q); }} className="datos-form">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Escribe tu pregunta…"
-          style={{ fontSize: 34, padding: "22px 28px", borderRadius: 22, flex: 1 }}
+          className="datos-input"
         />
-        <button className="boton" style={{ fontSize: 26, padding: "0 40px" }} disabled={cargando}>Preguntar</button>
+        <button className="boton datos-boton" disabled={cargando}>Preguntar</button>
       </form>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 28 }}>
+      <div className="datos-sugerencias">
         {preguntas.map((p) => (
-          <button key={p} className="boton secundario" style={{ fontSize: 21, padding: "12px 22px" }} disabled={cargando} onClick={() => { setQ(p); preguntar(p); }}>
+          <button key={p} className="boton secundario" disabled={cargando} onClick={() => { setQ(p); preguntar(p); }}>
             {p}
           </button>
         ))}
       </div>
 
-      {cargando && <div className="tarjeta pulso" style={{ fontSize: 30, padding: 40 }}>Analizando “{preguntaActual}”…</div>}
-      {error && <p className="error" style={{ fontSize: 24 }}>{error}</p>}
+      {cargando && <div className="tarjeta pulso datos-cargando">Analizando “{preguntaActual}”…</div>}
+      {error && <p className="error">{error}</p>}
       {r && !cargando && (
-        <div className="entra" style={{ display: "grid", gridTemplateColumns: r.tabla?.filas.length ? "minmax(0, 1fr) minmax(0, 1.25fr)" : "1fr", gap: 24 }}>
-          <div className="tarjeta" style={{ padding: 32 }}>
-            <div className="gris" style={{ fontSize: 20, marginBottom: 10 }}>{preguntaActual}</div>
-            <p style={{ fontSize: 31, lineHeight: 1.35, margin: "0 0 20px", fontWeight: 500 }}>{r.respuesta}</p>
+        <div className={`entra datos-resultado ${r.tabla?.filas.length ? "con-tabla" : ""}`}>
+          <div className="tarjeta datos-tarjeta">
+            <div className="gris datos-pregunta">{preguntaActual}</div>
+            <p className="datos-respuesta">{r.respuesta}</p>
             {r.tabla && r.tabla.filas.length > 0 && (
-              <table className="tabla" style={{ fontSize: 19 }}>
+              <div className="tabla-scroll">
+              <table className="tabla" style={{ fontSize: "0.8em" }}>
                 <thead><tr>{r.tabla.columnas.map((c, i) => <th key={i} className={i ? "num" : ""}>{c}</th>)}</tr></thead>
                 <tbody>
                   {r.tabla.filas.slice(0, 6).map((f, i) => (
@@ -72,10 +73,11 @@ export default function Datos({ preguntas }: { preguntas: string[] }) {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </div>
-          <div className="tarjeta" style={{ padding: "28px 28px 16px" }}>
-            <h3 style={{ fontSize: 26, marginBottom: 12 }}>{r.grafica.titulo}</h3>
+          <div className="tarjeta datos-tarjeta">
+            <h3 className="seccion-titulo" style={{ marginBottom: 12 }}>{r.grafica.titulo}</h3>
             <Grafica g={r.grafica} />
           </div>
         </div>

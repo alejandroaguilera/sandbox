@@ -5,12 +5,16 @@ export async function Qr({ ruta, titulo, texto }: { ruta: string; titulo: string
   const url = `${baseUrl()}${ruta}`;
   const svg = await QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } });
   return (
-    <div className="qr-caja">
-      <div className="qr" dangerouslySetInnerHTML={{ __html: svg }} />
-      <div className="qr-texto">
-        <b>{titulo}</b>
-        {texto ?? url.replace(/^https?:\/\//, "")}
+    <>
+      <div className="qr-caja">
+        <div className="qr" dangerouslySetInnerHTML={{ __html: svg }} />
+        <div className="qr-texto">
+          <b>{titulo}</b>
+          {texto ?? url.replace(/^https?:\/\//, "")}
+        </div>
       </div>
-    </div>
+      {/* En el celular un QR no sirve: se muestra un botón a la misma ruta. */}
+      <a className="boton secundario qr-movil" href={ruta}>{titulo} →</a>
+    </>
   );
 }

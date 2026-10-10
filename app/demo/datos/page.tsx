@@ -18,17 +18,17 @@ export default async function Page() {
   ];
   return (
     <div className="proyector">
-      <div className="encabezado" style={{ marginBottom: 24 }}>
+      <div className="encabezado">
         <div>
           <h1>Pregúntale a tus datos</h1>
           <p className="sub">{EMPRESA_FICTICIA} · <span style={{ color: "var(--texto)" }}>empresa ficticia</span>, distribuidora de abarrotes e insumos en Nuevo Laredo</p>
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 20, marginBottom: 28 }}>
+      <div className="kpis">
         {tarjetas.map((k) => (
-          <div key={k.t} className="tarjeta" style={{ padding: "18px 24px" }}>
-            <div className="gris" style={{ fontSize: 20 }}>{k.t}</div>
-            <div style={{ fontSize: 46, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: k.rojo ? "var(--rojo)" : undefined }}>{k.v}</div>
+          <div key={k.t} className="tarjeta kpi">
+            <div className="kpi-titulo">{k.t}</div>
+            <div className="kpi-valor" style={{ color: k.rojo ? "var(--rojo)" : undefined }}>{k.v}</div>
           </div>
         ))}
       </div>

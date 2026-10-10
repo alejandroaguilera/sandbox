@@ -13,8 +13,9 @@ interface Estado {
 const PASOS = ["Solicitud recibida", "Registrada en hoja de control", "Correo al gerente", "Esperando aprobación", "Aprobada", "Aviso al solicitante"];
 const $ = (n: number) => "$" + n.toLocaleString("es-MX", { maximumFractionDigits: 0 });
 const hora = (s: string) => new Date(s).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-const fechaCorta = (s: string) => new Date(s).toLocaleDateString("es-MX", { day: "2-digit", month: "short" });
+const fechaCorta = (s: string) => new Date(s).toLocaleDateString("es-MX", { day: "numeric", month: "short" }).replace(".", "");
 const ESTADO: Record<string, string> = { PENDIENTE: "Pendiente", APROBADA: "Aprobada", RECHAZADA: "Rechazada" };
+const iniciales = (s: string) => s.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join("").toUpperCase();
 
 export default function Compras() {
   const [e, setE] = useState<Estado | null>(null);
@@ -46,7 +47,7 @@ export default function Compras() {
     }
   }
 
-  // Línea de tiempo: pasos esperados + lo que realmente pasó (con hora al segundo).
+  // Seguimiento: pasos esperados + lo que realmente pasó (con hora al segundo).
   const eventos = e?.eventos ?? [];
   const rechazada = eventos.some((x) => x.paso === "Rechazada");
   const pasos = PASOS.map((p) => (p === "Aprobada" && rechazada ? "Rechazada" : p));
@@ -55,94 +56,131 @@ export default function Compras() {
 
   return (
     <>
+      <section className="seguimiento">
+        <div className="seguimiento-cab">
+          <b>Seguimiento</b>
+          <span className="gris">{e?.actual ? `Folio ${e.actual.folio}` : "Esperando la primera solicitud"}</span>
+          <span className="pildora modo">{e?.modo === "n8n" ? "Flujo: n8n" : "Flujo: directo"}</span>
+        </div>
+        <ol className="pasos">
+          {pasos.map((p, k) => {
+            const ev = eventos.find((x) => x.paso === p);
+            const siguiente = !ev && eventos.length > 0 && eventos.some((x) => x.paso === pasos[k - 1]);
+            const clase = ev ? (p === "Rechazada" ? "rechazo" : "hecho") : siguiente ? "siguiente" : "";
+            return (
+              <li key={p} className={`paso ${clase}`}>
+                <span className="paso-punto" />
+                <div className={`paso-nombre ${siguiente ? "pulso" : ""}`}>{p}</div>
+                <div className="paso-hora">{ev ? hora(ev.createdAt) : "—"}</div>
+              </li>
+            );
+          })}
+        </ol>
+        {extra.length > 0 && <p className="gris paso-extra">{extra.map((x) => `${hora(x.createdAt)} · ${x.paso}`).join("   ")}</p>}
+      </section>
+
       <div className="compras-grid">
-        <section className="tarjeta" style={{ fontSize: 18 }}>
-          <h3 className="seccion-titulo" style={{ marginBottom: 16 }}>1 · Solicitud</h3>
-          <FormSolicitud compacto />
-        </section>
-
-        <section className="tarjeta" style={{ padding: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <h3 className="seccion-titulo">2 · Hoja de control</h3>
-            <span className="pildora modo">{e?.modo === "n8n" ? "Flujo: n8n" : "Flujo: directo"}</span>
+        <Panel n={1} icono="form" app="Formulario" contexto="Lo llena quien necesita la compra">
+          <div className="panel-cuerpo">
+            <FormSolicitud compacto />
           </div>
-          <div className="tabla-scroll">
-          <table className="tabla tabla-media">
-            <thead>
-              <tr><th>Folio</th><th className="solo-ancho">Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
-            </thead>
-            <tbody>
-              {e?.requisiciones.map((r) => (
-                <tr key={r.id} className="entra">
-                  <td style={{ fontWeight: 700 }}>{r.folio}</td>
-                  <td className="gris solo-ancho">{fechaCorta(r.createdAt)}</td>
-                  <td>{r.solicitante}</td>
-                  <td>{r.cantidad} × {r.articulo}</td>
-                  <td className="num">{$(r.montoEstimado)}</td>
-                  <td><span className={`pildora ${r.estado}`}>{ESTADO[r.estado]}</span></td>
-                </tr>
-              ))}
-              {!e?.requisiciones.length && (
-                <tr><td colSpan={6} className="gris" style={{ padding: "40px 12px", textAlign: "center" }}>Aún no hay solicitudes</td></tr>
-              )}
-            </tbody>
-          </table>
-          </div>
-        </section>
+        </Panel>
 
-        <section className="tarjeta" style={{ padding: 20 }}>
-          <h3 className="seccion-titulo" style={{ marginBottom: 12 }}>3 · Bandeja de correo</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: 560, overflow: "auto" }}>
+        <Conector texto="se registra" />
+
+        <Panel n={2} icono="hoja" app="Hoja de control" contexto="Compras 2026 · se llena sola">
+          <div className="panel-cuerpo sin-relleno">
+            <table className="hoja">
+              <thead>
+                <tr><th className="hoja-n"></th><th>Folio</th><th>Fecha</th><th>Solicitante</th><th>Artículo</th><th className="num">Monto</th><th>Estado</th></tr>
+              </thead>
+              <tbody>
+                {e?.requisiciones.map((r, i) => (
+                  <tr key={r.id} className="entra">
+                    <td className="hoja-n">{i + 1}</td>
+                    <td style={{ fontWeight: 700 }}>{r.folio}</td>
+                    <td className="gris">{fechaCorta(r.createdAt)}</td>
+                    <td className="hoja-texto" title={r.solicitante}>{r.solicitante}</td>
+                    <td className="hoja-texto" title={`${r.cantidad} × ${r.articulo}`}>{r.cantidad} × {r.articulo}</td>
+                    <td className="num">{$(r.montoEstimado)}</td>
+                    <td><span className={`pildora ${r.estado}`}>{ESTADO[r.estado]}</span></td>
+                  </tr>
+                ))}
+                {!e?.requisiciones.length && (
+                  <tr><td colSpan={7} className="gris hoja-vacia">Aún no hay solicitudes</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Panel>
+
+        <Conector texto="avisa por correo" />
+
+        <Panel n={3} icono="correo" app="Correo" contexto="Avisos que manda el sistema">
+          <div className="panel-cuerpo sin-relleno">
             {e?.correos.map((c) => {
               const folio = Number(c.asunto.match(/\d{4,}/)?.[0]);
               const esperando = c.conBotones && !c.leido && pendientes.includes(folio);
               return (
-                <div key={c.id} className="entra" style={{ background: "var(--tarjeta-2)", borderRadius: 14, padding: 16, borderLeft: esperando ? "4px solid var(--azul)" : "4px solid transparent" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", fontSize: 16 }} className="gris">
-                    <span>Para: <b style={{ color: "var(--texto)" }}>{c.para}</b></span>
-                    <span>{hora(c.createdAt)}</span>
-                  </div>
-                  <div style={{ fontWeight: 700, fontSize: 19, margin: "6px 0" }}>{c.asunto}</div>
-                  <div style={{ fontSize: 16, whiteSpace: "pre-line", color: "#c7c7cc", lineHeight: 1.4 }}>{c.cuerpo}</div>
-                  {esperando && (
-                    <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-                      <button className="boton" style={{ flex: 1, padding: "12px 16px" }} disabled={!!ocupado} onClick={() => decidir(c.id, "aprobar")}>
-                        {ocupado === c.id + "aprobar" ? "…" : "Aprobar"}
-                      </button>
-                      <button className="boton secundario" style={{ flex: 1, padding: "12px 16px" }} disabled={!!ocupado} onClick={() => decidir(c.id, "rechazar")}>
-                        Rechazar
-                      </button>
+                <div key={c.id} className={`correo entra ${esperando ? "esperando" : ""}`}>
+                  <div className="correo-avatar">{iniciales(c.para)}</div>
+                  <div className="correo-cont">
+                    <div className="correo-linea">
+                      <span className="correo-para">{c.para}</span>
+                      <span className="gris correo-hora">{hora(c.createdAt)}</span>
                     </div>
-                  )}
+                    <div className="correo-asunto">{c.asunto}</div>
+                    <div className={`correo-cuerpo ${esperando ? "" : "recortado"}`}>{c.cuerpo}</div>
+                    {esperando && (
+                      <div className="correo-acciones">
+                        <button className="boton" disabled={!!ocupado} onClick={() => decidir(c.id, "aprobar")}>
+                          {ocupado === c.id + "aprobar" ? "…" : "Aprobar"}
+                        </button>
+                        <button className="boton secundario" disabled={!!ocupado} onClick={() => decidir(c.id, "rechazar")}>
+                          Rechazar
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })}
-            {!e?.correos.length && <p className="gris" style={{ fontSize: 18, textAlign: "center", padding: "30px 0" }}>Bandeja vacía</p>}
-            {aviso && <p className="error">{aviso}</p>}
+            {!e?.correos.length && <p className="gris hoja-vacia">Bandeja vacía</p>}
+            {aviso && <p className="error" style={{ padding: "0 16px" }}>{aviso}</p>}
           </div>
-        </section>
+        </Panel>
       </div>
-
-      <section style={{ marginTop: 28 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 14 }}>
-          <h3 className="seccion-titulo">Línea de tiempo</h3>
-          {e?.actual && <span className="gris" style={{ fontSize: 20 }}>Folio {e.actual.folio}</span>}
-        </div>
-        <div className="linea-tiempo" style={{ "--pasos": pasos.length } as React.CSSProperties}>
-          {pasos.map((p, k) => {
-            const ev = eventos.find((x) => x.paso === p);
-            const siguiente = !ev && (k === 0 || eventos.some((x) => x.paso === pasos[k - 1]));
-            return (
-              <div key={p} style={{ position: "relative" }}>
-                <div style={{ height: 6, borderRadius: 3, background: ev ? (p === "Rechazada" ? "var(--rojo)" : "var(--azul)") : "var(--tarjeta-2)", marginBottom: 12, transition: "background .4s" }} />
-                <div className={`paso-nombre ${siguiente && eventos.length ? "pulso" : ""}`} style={{ color: ev ? "var(--texto)" : "var(--gris)" }}>{p}</div>
-                <div className="paso-hora" style={{ color: ev ? "var(--azul)" : "transparent" }}>{ev ? hora(ev.createdAt) : "—"}</div>
-              </div>
-            );
-          })}
-        </div>
-        {extra.length > 0 && <p className="gris" style={{ fontSize: 16, marginTop: 10 }}>{extra.map((x) => `${hora(x.createdAt)} · ${x.paso}`).join("   ")}</p>}
-      </section>
     </>
   );
+}
+
+function Panel({ n, icono, app, contexto, children }: { n: number; icono: "form" | "hoja" | "correo"; app: string; contexto: string; children: React.ReactNode }) {
+  return (
+    <section className="panel">
+      <header className="panel-cab">
+        <span className={`panel-icono ${icono}`}><Icono tipo={icono} /></span>
+        <div style={{ minWidth: 0 }}>
+          <div className="panel-app"><span className="gris">{n} ·</span> {app}</div>
+          <div className="panel-contexto">{contexto}</div>
+        </div>
+      </header>
+      {children}
+    </section>
+  );
+}
+
+function Conector({ texto }: { texto: string }) {
+  return (
+    <div className="conector" aria-hidden>
+      <span className="conector-flecha">→</span>
+      <span className="conector-texto">{texto}</span>
+    </div>
+  );
+}
+
+function Icono({ tipo }: { tipo: "form" | "hoja" | "correo" }) {
+  const p = { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  if (tipo === "form") return <svg {...p}><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 8h8M8 12h8M8 16h5" /></svg>;
+  if (tipo === "hoja") return <svg {...p}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18M3 15h18M9 4v16" /></svg>;
+  return <svg {...p}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>;
 }

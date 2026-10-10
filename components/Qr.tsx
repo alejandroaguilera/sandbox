@@ -9,8 +9,9 @@ export async function Qr({ ruta, titulo, texto }: { ruta: string; titulo: string
       <div className="qr-caja">
         <div className="qr" dangerouslySetInnerHTML={{ __html: svg }} />
         <div className="qr-texto">
+          <span className="qr-eyebrow">Escanea con tu celular</span>
           <b>{titulo}</b>
-          {texto ?? url.replace(/^https?:\/\//, "")}
+          <span className="qr-url">{texto ?? url.replace(/^https?:\/\//, "")}</span>
         </div>
       </div>
       {/* En el celular un QR no sirve: se muestra un botón a la misma ruta. */}

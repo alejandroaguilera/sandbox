@@ -4,6 +4,7 @@ const TARJETAS = [
   { href: "/demo/compras", num: "Demo 1", titulo: "Requisición de compra", texto: "De WhatsApp y papelitos a un flujo automático." },
   { href: "/demo/gastos", num: "Demo 2", titulo: "Tickets → gastos", texto: "Tomas foto, la IA lo captura y lo clasifica." },
   { href: "/demo/datos", num: "Demo 3", titulo: "Pregúntale a tus datos", texto: "Respuestas en español, con gráfica." },
+  { href: "/demo/agenda", num: "Demo 4", titulo: "Agenda de servicios", texto: "Horarios libres en vivo, sin encimar citas." },
 ];
 
 export default function Hub() {

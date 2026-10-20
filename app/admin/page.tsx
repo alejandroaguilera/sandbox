@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { flowMode } from "@/lib/config";
 import { estadoCache } from "@/lib/preguntar";
 import { DIMENSIONES, TAMANOS } from "@/lib/constantes";
+import { resumenAgenda } from "@/lib/agenda";
 import Panel from "./Panel";
 
 export const metadata: Metadata = { title: "Admin · Sandbox" };
@@ -12,12 +13,13 @@ export const dynamic = "force-dynamic";
 
 export default async function Admin() {
   if (!(await esAdmin())) redirect("/admin/login");
-  const [leads, sala, modo, nReq, nGastos] = await Promise.all([
+  const [leads, sala, modo, nReq, nGastos, agenda] = await Promise.all([
     prisma.lead.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.salaRespuesta.findMany({ orderBy: { createdAt: "desc" }, take: 300 }),
     flowMode(),
     prisma.requisicion.count(),
     prisma.gasto.count({ where: { origen: { not: "ejemplo" } } }),
+    resumenAgenda(7),
   ]);
   const tam = Object.fromEntries(TAMANOS.map((t) => [t.id, t.nombre]));
   const dim = Object.fromEntries(DIMENSIONES.map((d) => [d.id, d.nombre]));
@@ -26,6 +28,7 @@ export default async function Admin() {
       modo={modo}
       cache={estadoCache()}
       conteos={{ requisiciones: nReq, gastos: nGastos }}
+      agenda={agenda}
       leads={leads.map((l) => ({
         id: l.id,
         fecha: l.createdAt.toISOString(),

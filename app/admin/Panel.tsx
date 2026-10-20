@@ -1,18 +1,21 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import type { ResumenAgenda } from "@/lib/agenda";
+import { etiquetaDia, hhmm, pesos } from "@/lib/agenda-catalogo";
 
 interface Props {
   modo: string;
   cache: { listas: number; total: number };
   conteos: { requisiciones: number; gastos: number };
+  agenda: ResumenAgenda;
   leads: { id: string; fecha: string; nombre: string; empresa: string; correo: string; whatsapp: string | null; tamano: string; giro: string | null; proceso: string | null; diagnostico: boolean }[];
   sala: { id: string; fecha: string; dimension: string; tamano: string; proceso: string; oculto: boolean }[];
 }
 
 const hora = (s: string) => new Date(s).toLocaleString("es-MX", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
 
-export default function Panel({ modo, cache, conteos, leads, sala }: Props) {
+export default function Panel({ modo, cache, conteos, agenda, leads, sala }: Props) {
   const router = useRouter();
   const [msg, setMsg] = useState("");
   const [ocupado, setOcupado] = useState(false);
@@ -63,10 +66,59 @@ export default function Panel({ modo, cache, conteos, leads, sala }: Props) {
           <button className="boton peligro" disabled={ocupado} onClick={() => post("/api/admin/reset", { demo: "gastos" }, "¿Reiniciar gastos? Borra los tickets procesados.")}>
             Reiniciar gastos ({conteos.gastos})
           </button>
+          <button className="boton peligro" disabled={ocupado} onClick={() => post("/api/admin/reset", { demo: "agenda" }, "¿Reiniciar la agenda? Borra las reservas hechas en vivo (las de ejemplo se quedan).")}>
+            Reiniciar agenda ({agenda.total.vivo})
+          </button>
           <button className="boton secundario" disabled={ocupado} onClick={async () => { const j = await post("/api/admin/modo", { accion: "calentar" }); if (j?.ok) setMsg(`Caché de preguntas: ${j.listas}/${j.total}`); }}>
             Calentar Demo 3 ({cache.listas}/{cache.total})
           </button>
         </div>
+      </div>
+
+      <h2>Agenda · próximos 7 días</h2>
+      <div className="acciones" style={{ marginBottom: 12 }}>
+        <a className="boton" href="/admin/agenda?dias=7">Ver resumen para imprimir</a>
+        <a className="boton secundario" href="/admin/agenda?dias=1">Solo hoy</a>
+        <span className="gris">{etiquetaDia(agenda.desde)} al {etiquetaDia(agenda.hasta)}</span>
+      </div>
+      <div className="admin-kpis">
+        <div className="tarjeta"><span className="gris">Servicios reservados</span><b>{agenda.total.n}</b></div>
+        <div className="tarjeta"><span className="gris">Reservados en vivo</span><b className="azul">{agenda.total.vivo}</b></div>
+        <div className="tarjeta"><span className="gris">Horas de taller</span><b>{agenda.total.horas.toLocaleString("es-MX")}</b></div>
+        <div className="tarjeta"><span className="gris">Ocupación</span><b>{Math.round(agenda.total.ocupacion * 100)}%</b></div>
+        <div className="tarjeta"><span className="gris">Ingreso estimado</span><b>{pesos(agenda.total.ingreso)}</b></div>
+      </div>
+      <div className="tarjeta" style={{ overflowX: "auto", padding: 8, marginBottom: 16 }}>
+        <table className="tabla">
+          <thead><tr><th>Servicio</th><th className="num">Reservas</th><th className="num">Horas</th><th className="num">Ingreso estimado</th></tr></thead>
+          <tbody>
+            {agenda.porServicio.map((s) => (
+              <tr key={s.nombre}><td>{s.nombre}</td><td className="num">{s.n}</td><td className="num">{s.horas.toLocaleString("es-MX")}</td><td className="num">{pesos(s.ingreso)}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="tarjeta" style={{ overflowX: "auto", padding: 8 }}>
+        <table className="tabla">
+          <thead><tr><th>Folio</th><th>Día</th><th>Horario</th><th>Bahía</th><th>Servicio</th><th>Cliente</th><th></th></tr></thead>
+          <tbody>
+            {agenda.filas.filter((r) => r.vivo).map((r) => (
+              <tr key={r.id}>
+                <td><b>{r.folio}</b></td>
+                <td style={{ whiteSpace: "nowrap" }}>{etiquetaDia(r.fecha)}</td>
+                <td className="gris" style={{ whiteSpace: "nowrap" }}>{hhmm(r.inicioMin)}–{hhmm(r.finMin)}</td>
+                <td>{r.bahia}</td><td>{r.servicio}</td><td>{r.cliente}</td>
+                <td>
+                  <button className="boton secundario" style={{ padding: "6px 14px", fontSize: 14 }} disabled={ocupado}
+                    onClick={async () => { if (!window.confirm(`¿Borrar la reserva ${r.folio} de ${r.cliente}?`)) return; await fetch(`/api/admin/agenda?id=${r.id}`, { method: "DELETE" }); router.refresh(); }}>
+                    Borrar
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {!agenda.total.vivo && <tr><td colSpan={7} className="gris">Aún no hay reservas en vivo (la agenda trae reservas de ejemplo de relleno)</td></tr>}
+          </tbody>
+        </table>
       </div>
 
       <h2>Leads ({leads.length}) · {diag} quieren diagnóstico</h2>

@@ -17,5 +17,10 @@ export async function POST(req: Request) {
     await prisma.gasto.deleteMany({ where: { origen: { not: "ejemplo" } } });
     return NextResponse.json({ ok: true });
   }
-  return mal("demo debe ser compras o gastos");
+  if (b?.demo === "agenda") {
+    // Solo las reservas en vivo; las de ejemplo son el relleno fijo de la agenda.
+    await prisma.reserva.deleteMany({ where: { origen: "vivo" } });
+    return NextResponse.json({ ok: true });
+  }
+  return mal("demo debe ser compras, gastos o agenda");
 }

@@ -13,3 +13,6 @@ Workshop_*.pdf
 .anthropic_key
 scripts-set-key.sh
 Cuadernillo_*.docx
+
+# Propuestas a clientes (confidenciales)
+Propuesta_*.pdf

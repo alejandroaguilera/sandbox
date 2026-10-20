@@ -159,3 +159,21 @@ model Factura {
 
   @@index([clienteId])
 }
+
+// Demo 4: agenda de servicios (taller ficticio). fecha + minutos en hora local del negocio,
+// sin zonas horarias de por medio.
+model Reserva {
+  id            String   @id
+  folio         Int?     @unique // solo las reservas en vivo llevan folio
+  fecha         String   @db.VarChar(10) // YYYY-MM-DD
+  inicioMin     Int
+  finMin        Int
+  bahia         Int
+  servicioId    Int
+  clienteNombre String   @db.VarChar(80)
+  vehiculo      String?  @db.VarChar(80)
+  origen        String // "ejemplo" | "vivo"
+  createdAt     DateTime @default(now())
+
+  @@index([fecha])
+}

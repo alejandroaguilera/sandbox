@@ -250,9 +250,83 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
 .envivo-cita { font-size: 44px; font-weight: 700; line-height: 1.15; }
 .hub-eyebrow { font-size: 20px; font-weight: 600; margin: 0 0 12px; }
 
+/* Demo 4: agenda de servicios (formulario → línea de tiempo por bahía) */
+.agenda-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) 72px minmax(0, 2.2fr); height: clamp(560px, calc(100vh - 300px), 820px); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font: inherit; font-size: 15px; font-weight: 600; color: var(--texto); background: var(--tarjeta-2); border: 2px solid transparent; border-radius: 980px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.chip[aria-pressed="true"] { border-color: var(--azul); background: #0a2540; color: #fff; }
+.horas { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
+.hora { font: inherit; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--texto); background: var(--tarjeta-2); border: 2px solid transparent; border-radius: 12px; padding: 10px 4px; cursor: pointer; }
+.hora[aria-pressed="true"] { border-color: var(--azul); background: var(--azul); color: #fff; }
+.hora:disabled { background: transparent; border: 1px dashed var(--linea); color: #5a5a5e; text-decoration: line-through; cursor: default; }
+.horas-cuenta { font-weight: 500; }
+.form-reserva .opcion { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.form-reserva .opcion b { display: inline; }
+.form-reserva .opcion span { white-space: nowrap; flex: none; }
+.form-reserva.compacto .campo { margin-bottom: 16px; }
+.form-reserva.compacto select { padding: 12px 14px; }
+.form-reserva.compacto .hora { font-size: 15px; padding: 8px 2px; }
+.form-reserva.compacto .horas { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+.form-reserva.compacto .chip { font-size: 14px; padding: 6px 12px; }
+.reserva-ok { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 24px 8px; }
+.reserva-ok-check { width: 64px; height: 64px; border-radius: 50%; background: #0b3a1a; color: var(--verde); display: grid; place-items: center; font-size: 34px; font-weight: 700; }
+.reserva-ok-titulo { font-size: 26px; }
+.reserva-ok-detalle { font-size: 18px; line-height: 1.5; margin-bottom: 8px; }
+.agenda-cab { flex-wrap: wrap; }
+.agenda-dias { margin-left: auto; }
+.agenda-cab .panel-app { white-space: nowrap; }
+.agenda-cuerpo { display: flex; flex-direction: column; gap: 18px; }
+.agenda-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.agenda-kpis > div { background: var(--tarjeta-2); border-radius: 14px; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.agenda-kpis span { font-size: 15px; }
+.agenda-kpis b { font-size: 32px; font-variant-numeric: tabular-nums; }
+.linea-scroll { overflow-x: auto; flex: 1; min-height: 0; }
+.linea { --bahia-ancho: 96px; position: relative; min-width: 760px; height: 100%; display: flex; flex-direction: column; }
+.linea-horas { position: relative; height: 24px; margin-left: var(--bahia-ancho); flex: none; }
+.linea-horas span { position: absolute; transform: translateX(-50%); font-size: 14px; color: var(--gris); font-variant-numeric: tabular-nums; }
+.linea-horas span:first-child { transform: none; }
+.linea-horas span:last-child { transform: translateX(-100%); }
+.linea-fila { display: flex; flex: 1; min-height: 58px; border-top: 1px solid #2c2c2e; }
+.linea-bahia { width: var(--bahia-ancho); flex: none; display: flex; align-items: center; font-size: 16px; font-weight: 700; }
+.linea-pista { position: relative; flex: 1; }
+.linea-guia { position: absolute; top: 0; bottom: 0; width: 1px; background: #2a2a2c; }
+.linea-pasado { position: absolute; left: 0; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, #ffffff06 0 6px, transparent 6px 12px); }
+.linea-cerrado { position: absolute; top: 0; bottom: 0; background: #0e0e10; display: grid; place-items: center; color: #5a5a5e; font-size: 14px; }
+.linea-ahora { position: absolute; top: 18px; bottom: 0; width: 2px; background: var(--rojo); z-index: 3; }
+.linea-ahora span { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: var(--rojo); }
+.cita { position: absolute; top: 6px; bottom: 6px; background: #2c2c2e; border-left: 4px solid #636366; border-radius: 8px; padding: 5px 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; line-height: 1.2; z-index: 1; }
+.cita span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cita-hora { font-size: 12px; color: var(--gris); font-variant-numeric: tabular-nums; }
+.cita-servicio { font-size: 14px; font-weight: 700; }
+.cita-cliente { font-size: 13px; color: #c7c7cc; }
+.cita.vivo { background: #0a2540; border-left-color: var(--azul); }
+.cita.vivo .cita-hora { color: var(--azul); }
+.cita.nuevo { animation: entra .5s ease both, brillo 1.2s ease-in-out 4; box-shadow: 0 0 0 2px var(--azul); z-index: 2; }
+@keyframes brillo { 0%, 100% { box-shadow: 0 0 0 2px var(--azul); } 50% { box-shadow: 0 0 0 6px #2997ff55; } }
+.colchon { position: absolute; top: 6px; bottom: 6px; background: repeating-linear-gradient(135deg, #ffd60a22 0 4px, transparent 4px 8px); border-radius: 0 6px 6px 0; }
+.agenda-leyenda { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; flex: none; }
+.agenda-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.ley { display: inline-block; width: 18px; height: 12px; border-radius: 3px; }
+.cita-ley { background: #2c2c2e; border-left: 3px solid #636366; }
+.vivo-ley { background: #0a2540; border-left: 3px solid var(--azul); }
+.colchon-ley { background: repeating-linear-gradient(135deg, #ffd60a55 0 3px, transparent 3px 6px); }
+
+@media (max-width: 1500px) {
+  .agenda-grid { grid-template-columns: minmax(0, 0.85fr) 56px minmax(0, 2.2fr); }
+  .agenda-cab { flex-wrap: nowrap; }
+  .agenda-dias { flex-wrap: nowrap; overflow-x: auto; min-width: 0; gap: 6px; }
+  .agenda-dias .chip { font-size: 13px; padding: 5px 10px; }
+  .agenda-cuerpo { gap: 12px; }
+  .agenda-kpis > div { padding: 8px 14px; }
+  .agenda-kpis span { font-size: 13px; }
+  .agenda-kpis b { font-size: 24px; }
+}
 /* Pantallas medianas (laptop chica / tablet): las columnas se apilan. */
 @media (max-width: 1100px) {
-  .compras-grid { grid-template-columns: 1fr; height: auto; gap: 0; }
+  .compras-grid, .agenda-grid { grid-template-columns: 1fr; height: auto; gap: 0; }
+  .agenda-grid .panel-cuerpo { overflow: visible; }
+  .agenda-cab { flex-wrap: wrap; }
+  .linea-fila { min-height: 76px; }
   .conector { flex-direction: row; padding: 10px 0; }
   .conector-flecha { transform: rotate(90deg); }
   .panel-cuerpo.sin-relleno { max-height: 460px; }
@@ -316,6 +390,15 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
   .correo-asunto { font-size: 15px; }
   .correo-cuerpo { font-size: 14px; }
 
+  .agenda-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .agenda-kpis b { font-size: 22px; }
+  .agenda-kpis span { font-size: 13px; }
+  .agenda-dias { margin-left: 0; width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+  .linea { --bahia-ancho: 72px; }
+  .linea-bahia { font-size: 14px; }
+  .agenda-leyenda { gap: 10px 16px; font-size: 13px; }
+  .reserva-ok-titulo { font-size: 22px; }
+
   .datos-form { flex-direction: column; gap: 10px; }
   .datos-input { font-size: 18px; padding: 15px 16px; border-radius: 14px; }
   .datos-boton { font-size: 17px; padding: 14px 20px; }
@@ -336,4 +419,54 @@ input:focus, textarea:focus, select:focus { border-color: var(--azul); }
   .hub-card h2 { font-size: 24px; }
   .hub-card p { font-size: 16px; }
   .hub-card .num { font-size: 15px; }
+}
+
+/* ---------- Admin: KPIs de la agenda ---------- */
+.admin-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.admin-kpis .tarjeta { padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.admin-kpis b { font-size: 28px; font-variant-numeric: tabular-nums; }
+@media (max-width: 900px) { .admin-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Resumen imprimible (hoja blanca en pantalla y en papel) ---------- */
+.impresion { max-width: 1000px; margin: 0 auto; padding: 32px 16px; }
+.impresion-barra { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.impresion-barra .boton { font-size: 15px; padding: 10px 18px; }
+.impresion-barra .boton:last-child { margin-left: auto; }
+.hoja-imp { background: #fff; color: #1d1d1f; border-radius: 12px; padding: 40px 44px; font-size: 14px; line-height: 1.4; }
+.hoja-imp h1 { font-size: 26px; margin: 2px 0 4px; }
+.hoja-imp h2 { font-size: 16px; margin: 28px 0 10px; text-transform: uppercase; letter-spacing: .05em; color: #1d1d1f; }
+.hoja-imp h3 { font-size: 15px; margin: 18px 0 6px; }
+.hoja-imp h3 span { font-weight: 500; color: #6e6e73; text-transform: none; }
+.imp-cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; border-bottom: 2px solid #1d1d1f; padding-bottom: 16px; }
+.imp-negocio { font-size: 13px; font-weight: 700; color: #0066cc; text-transform: uppercase; letter-spacing: .06em; }
+.imp-rango { color: #424245; }
+.imp-generado { color: #6e6e73; font-size: 12px; text-align: right; }
+.imp-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.imp-kpis div { border: 1px solid #d2d2d7; border-radius: 10px; padding: 10px 14px; display: flex; flex-direction: column; }
+.imp-kpis span { color: #6e6e73; font-size: 12px; }
+.imp-kpis b { font-size: 24px; font-variant-numeric: tabular-nums; }
+.imp-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.imp-tabla { width: 100%; border-collapse: collapse; }
+.imp-tabla th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #6e6e73; border-bottom: 1px solid #1d1d1f; padding: 6px 8px; }
+.imp-tabla td { border-bottom: 1px solid #e5e5ea; padding: 6px 8px; vertical-align: top; }
+.imp-tabla .num { text-align: right; font-variant-numeric: tabular-nums; }
+.imp-tabla tr.imp-vivo td { background: #e8f2ff; font-weight: 600; }
+.imp-dia { break-inside: avoid; }
+.imp-pie { margin-top: 28px; padding-top: 12px; border-top: 1px solid #d2d2d7; color: #6e6e73; font-size: 12px; }
+@media (max-width: 700px) {
+  .hoja-imp { padding: 22px 16px; border-radius: 10px; font-size: 13px; }
+  .imp-cab { flex-direction: column; align-items: flex-start; }
+  .imp-generado { text-align: left; }
+  .imp-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .imp-dos { grid-template-columns: 1fr; gap: 0; }
+  .imp-dia { overflow-x: auto; }
+  .impresion-barra .boton:last-child { margin-left: 0; }
+}
+@media print {
+  @page { size: letter; margin: 14mm; }
+  body { background: #fff; }
+  .pie, .no-imprimir { display: none !important; }
+  .impresion { padding: 0; max-width: none; }
+  .hoja-imp { padding: 0; border-radius: 0; }
+  .imp-tabla tr.imp-vivo td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

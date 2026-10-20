@@ -4,7 +4,7 @@ import { prisma } from "./db";
 // Seed determinístico e idempotente: mismos datos en cada arranque (semilla fija,
 // ids explícitos, upsert / skipDuplicates). Seguro de correr en cada boot.
 
-function mulberry32(a: number) {
+export function mulberry32(a: number) {
   return () => {
     a |= 0;
     a = (a + 0x6d2b79f5) | 0;

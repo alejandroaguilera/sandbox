@@ -16,3 +16,7 @@ Cuadernillo_*.docx
 
 # Propuestas a clientes (confidenciales)
 Propuesta_*.pdf
+
+# Llaves de APIs (nunca al repo)
+APIS*.md
+sanbox demo.png

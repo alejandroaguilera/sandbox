@@ -22,7 +22,7 @@ export function ahoraLocal(): Ahora {
   return { fecha: `${p.year}-${p.month}-${p.day}`, min: Number(p.hour) * 60 + Number(p.minute) };
 }
 
-function sumarDias(fecha: string, n: number) {
+export function sumarDias(fecha: string, n: number) {
   const d = new Date(`${fecha}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
@@ -153,6 +153,41 @@ export async function disponibilidad(fecha: string, servicioId: number) {
   return horarios(fecha, s.min, ocupadas, ahora);
 }
 
+const sinAcentos = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+/** Fechas hábiles entre dos días (inclusive), con las reservas de ejemplo ya generadas. */
+async function fechasHabiles(desde: string, hasta: string) {
+  const fechas: string[] = [];
+  for (let f = desde; f <= hasta && fechas.length < 62; f = sumarDias(f, 1)) if (cierreDe(f)) fechas.push(f);
+  await asegurarEjemplos(fechas);
+  return fechas;
+}
+
+/** Reservas entre dos fechas (bot de Telegram). */
+export async function reservasEntre(desde: string, hasta: string) {
+  const fechas = await fechasHabiles(desde, hasta);
+  const rs = await prisma.reserva.findMany({ where: { fecha: { in: fechas } }, orderBy: [{ fecha: "asc" }, { inicioMin: "asc" }, { bahia: "asc" }] });
+  return rs.map(fila);
+}
+
+/** Reservas de un cliente (búsqueda sin acentos por cada palabra) en las últimas y próximas 2 semanas. */
+export async function reservasDeCliente(nombre: string) {
+  const hoy = ahoraLocal().fecha;
+  const fechas = await fechasHabiles(sumarDias(hoy, -14), sumarDias(hoy, 14));
+  const palabras = sinAcentos(nombre).split(/\s+/).filter((p) => p.length > 1);
+  if (!palabras.length) return [];
+  const rs = await prisma.reserva.findMany({
+    where: { OR: [{ fecha: { in: fechas } }, { origen: "vivo" }] },
+    orderBy: [{ fecha: "asc" }, { inicioMin: "asc" }],
+  });
+  return rs.filter((r) => palabras.every((p) => sinAcentos(r.clienteNombre).includes(p))).map(fila);
+}
+
+function fila(r: { id: string; folio: number | null; fecha: string; inicioMin: number; finMin: number; bahia: number; servicioId: number; clienteNombre: string; vehiculo: string | null; origen: string }) {
+  const s = servicioDe(r.servicioId);
+  return { folio: r.folio, fecha: r.fecha, inicio: hhmm(r.inicioMin), fin: hhmm(r.finMin), bahia: r.bahia, servicio: s?.nombre ?? "Servicio", precio: s?.precio ?? 0, cliente: r.clienteNombre, vehiculo: r.vehiculo };
+}
+
 // ---------- Reservar ----------
 
 export const ReservaSchema = z.object({
@@ -161,6 +196,7 @@ export const ReservaSchema = z.object({
   inicioMin: z.coerce.number().int(),
   clienteId: z.coerce.number().int().optional().nullable(),
   nombre: z.string().trim().max(60).optional().nullable(),
+  vehiculo: z.string().trim().max(80).optional().nullable(),
 });
 
 export class ErrorAgenda extends Error {
@@ -193,7 +229,7 @@ export async function reservar(d: z.infer<typeof ReservaSchema>) {
     const ultimo = await tx.reserva.aggregate({ _max: { folio: true } });
     const folio = Math.max(1000, ultimo._max.folio ?? 1000) + 1;
     return tx.reserva.create({
-      data: { id: randomUUID(), folio, fecha: d.fecha, inicioMin: d.inicioMin, finMin: d.inicioMin + s.min, bahia, servicioId: s.id, clienteNombre: nombre, vehiculo: cliente?.vehiculo ?? null, origen: "vivo" },
+      data: { id: randomUUID(), folio, fecha: d.fecha, inicioMin: d.inicioMin, finMin: d.inicioMin + s.min, bahia, servicioId: s.id, clienteNombre: nombre, vehiculo: cliente?.vehiculo ?? (d.vehiculo || null), origen: "vivo" },
     });
   });
 }

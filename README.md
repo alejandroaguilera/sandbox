@@ -15,6 +15,16 @@ Next.js (App Router) + Prisma 6 + Postgres, desplegado en Dokploy. n8n en `sandb
 | `/privacidad` | — | Aviso de privacidad simplificado |
 | `/admin` | Alejandro | Leads + CSV, moderación de sala, reset de demos, modo de flujo |
 
+## Bot de Telegram (@agendaserviciosbot)
+
+Agente con Grok (xAI) sobre la Demo 3 y la Demo 4: responde preguntas de los datos de la distribuidora (con gráfica en imagen),
+consulta la agenda del taller (hoy, mañana, por cliente) y agenda servicios nuevos, que aparecen al instante en `/demo/agenda`.
+Menú fijo con botones + comandos (`/datos`, `/agendar`, `/hoy`, `/manana`, `/cliente`, `/nueva`).
+
+- Webhook: `POST /api/telegram`, validado con `TELEGRAM_WEBHOOK_SECRET`. El webhook y el menú se registran solos al arrancar.
+- Código: `lib/telegram.ts` (Bot API), `lib/bot.ts` (menú, estado por chat), `lib/agente.ts` (Grok + herramientas), `lib/grafica-png.ts`.
+- El historial de cada chat vive en memoria (45 min); se pierde al redeployar. `/nueva` lo borra a mano.
+
 ## Operación
 
 - **Cambiar el flujo de compras en vivo:** `/admin` → "Flujo de compras" → *Directo* o *n8n*. Se guarda en la tabla `Config` y

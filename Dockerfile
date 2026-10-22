@@ -12,6 +12,8 @@ RUN npm run build
 
 FROM node:22-alpine AS runner
 WORKDIR /app
+# Fuentes para dibujar las gráficas (SVG → PNG) que manda el bot de Telegram.
+RUN apk add --no-cache font-dejavu fontconfig
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0

@@ -1,0 +1,146 @@
+{
+  "curso": "Inteligencia artificial desde cero",
+  "bloques": [
+    { "id": "00", "nombre": "Bienvenida", "hora": "0:00" },
+    { "id": "01", "nombre": "Qué es la IA, sin tecnicismos", "hora": "0:10" },
+    { "id": "02", "nombre": "Las herramientas", "hora": "0:25" },
+    { "id": "03", "nombre": "La IA en tu vida", "hora": "0:45" },
+    { "id": "04", "nombre": "La IA en tu trabajo", "hora": "1:05" },
+    { "id": "05", "nombre": "Manos a la obra", "hora": "1:30" },
+    { "id": "06", "nombre": "Usarla con cuidado", "hora": "1:50" }
+  ],
+  "momentos": [
+    { "id": "bienvenida", "bloque": "00", "tipo": "info", "titulo": "Bienvenido al curso", "instruccion": "Deja abierta esta página: la vamos a usar durante todo el curso.", "accion": null, "lamina": 1 },
+    { "id": "sondeo", "bloque": "00", "tipo": "participa", "titulo": "Levanta la mano… o vota aquí", "instruccion": "Responde 4 preguntas rápidas. Las cuatro respuestas son normales.", "accion": { "tipo": "votacion", "votacionId": "sondeo" }, "lamina": 5 },
+    { "id": "regla", "bloque": "00", "tipo": "info", "titulo": "Una sola regla para hoy: el celular, úsalo", "instruccion": "Hoy sí se vale tener el celular en la mano.", "accion": null, "lamina": 7 },
+
+    { "id": "ya-usas", "bloque": "01", "tipo": "participa", "titulo": "Ya usas inteligencia artificial", "instruccion": "Solo que no le decías así. ¿En qué la usas sin darte cuenta? Dilo en voz alta.", "accion": null, "lamina": 9 },
+    { "id": "frase", "bloque": "01", "tipo": "participa", "titulo": "Completa la frase", "instruccion": "Escribe la primera palabra que se te ocurra.", "accion": { "tipo": "votacion", "votacionId": "frase" }, "lamina": 12 },
+    { "id": "practicante", "bloque": "01", "tipo": "info", "titulo": "Piensa en un practicante brillante", "instruccion": "Leyó casi todo y nunca se cansa, pero es nuevo: no conoce tu trabajo y a veces se equivoca muy seguro. Entre mejor le explicas, mejor trabaja.", "accion": null, "lamina": 16 },
+
+    { "id": "demo-comparar", "bloque": "02", "tipo": "demo", "titulo": "Misma pregunta, dos asistentes", "instruccion": "Mira la pantalla. La IA no tiene una sola respuesta: tiene borradores.", "accion": { "tipo": "prompt", "promptId": "comparar" }, "lamina": 23 },
+    { "id": "cuenta", "bloque": "02", "tipo": "ejercicio", "titulo": "Abre tu primera cuenta", "instruccion": "Entra a chatgpt.com o descarga la app ChatGPT (también sirve Gemini). Inicia sesión con tu correo personal y escribe: “Hola, ¿qué puedes hacer por mí?”. Si no puedes registrarte, usa la pestaña Practicar.", "accion": { "tipo": "chatgpt" }, "lamina": 24 },
+
+    { "id": "demo-preguntar", "bloque": "03", "tipo": "demo", "titulo": "Pregúntale como a una persona", "instruccion": "Mira la pantalla. Si quieres, pruébala tú.", "accion": { "tipo": "prompt", "promptId": "preguntar" }, "lamina": 30 },
+    { "id": "demo-imagen", "bloque": "03", "tipo": "demo", "titulo": "Descríbela y aparece", "instruccion": "Mira la pantalla. Para probarla, cópiala y pégala en tu app de ChatGPT o Gemini.", "accion": { "tipo": "prompt", "promptId": "imagen" }, "lamina": 31 },
+    { "id": "demo-aprender", "bloque": "03", "tipo": "demo", "titulo": "Un tutor paciente, a cualquier hora", "instruccion": "Mira la pantalla. En tu app, usa el modo de voz: el ícono de la onda junto a donde escribes.", "accion": { "tipo": "prompt", "promptId": "aprender" }, "lamina": 32 },
+    { "id": "demo-traducir", "bloque": "03", "tipo": "demo", "titulo": "Apunta la cámara y entiende", "instruccion": "Mira la pantalla. Sirve igual para una etiqueta, un manual o un letrero.", "accion": { "tipo": "prompt", "promptId": "traducir" }, "lamina": 33 },
+    { "id": "demo-recibo", "bloque": "03", "tipo": "demo", "titulo": "Tómale foto y pídele que te lo explique", "instruccion": "Mira la pantalla. En tu app, toma la foto y pega esta instrucción.", "accion": { "tipo": "prompt", "promptId": "recibo" }, "lamina": 34 },
+    { "id": "demo-menu", "bloque": "03", "tipo": "demo", "titulo": "Un plan armado en un minuto", "instruccion": "Mira la pantalla. Si quieres, pruébala tú y ajústala: “Sin cerdo.” · “Algo rápido entre semana.”", "accion": { "tipo": "prompt", "promptId": "menu" }, "lamina": 35 },
+    { "id": "elige", "bloque": "03", "tipo": "ejercicio", "titulo": "Elige uno y hazlo ahora", "instruccion": "En tu app: pregúntale algo que siempre quisiste entender, pídele una imagen para alguien que quieres, o tómale foto a algo y pregúntale qué es. Luego enséñaselo a quien tienes al lado.", "accion": { "tipo": "chatgpt" }, "lamina": 37 },
+
+    { "id": "area", "bloque": "04", "tipo": "participa", "titulo": "¿En qué área trabajas tú?", "instruccion": "Elige la que más se parezca a tu día a día.", "accion": { "tipo": "votacion", "votacionId": "area" }, "lamina": 40 },
+    { "id": "demo-correo", "bloque": "04", "tipo": "demo", "titulo": "El correo difícil, en un minuto", "instruccion": "Mira la pantalla. Si quieres, pruébala tú.", "accion": { "tipo": "prompt", "promptId": "correo" }, "lamina": 43 },
+    { "id": "demo-minuta", "bloque": "04", "tipo": "demo", "titulo": "De notas revueltas a minuta", "instruccion": "Mira la pantalla. Escribe tus notas como salgan: ella las ordena.", "accion": { "tipo": "prompt", "promptId": "minuta" }, "lamina": 44 },
+    { "id": "demo-documento", "bloque": "04", "tipo": "demo", "titulo": "Lo importante de 20 páginas", "instruccion": "Mira la pantalla. Pídele la página de donde lo sacó, y verifica.", "accion": { "tipo": "prompt", "promptId": "documento" }, "lamina": 45 },
+    { "id": "demo-excel", "bloque": "04", "tipo": "demo", "titulo": "La fórmula que nunca te acuerdas", "instruccion": "Mira la pantalla. Pídele que te explique la fórmula: así la próxima la haces tú.", "accion": { "tipo": "prompt", "promptId": "excel" }, "lamina": 46 },
+    { "id": "demo-presentacion", "bloque": "04", "tipo": "demo", "titulo": "La hoja en blanco, resuelta", "instruccion": "Mira la pantalla. Úsala para empezar: el diseño y los datos finales los pones tú.", "accion": { "tipo": "prompt", "promptId": "presentacion" }, "lamina": 47 },
+    { "id": "regla-oro", "bloque": "04", "tipo": "info", "titulo": "La IA propone. Una persona dispone.", "instruccion": "Siempre el mismo patrón: la IA escribe el borrador, tú revisas y tú decides.", "accion": null, "lamina": 48 },
+
+    { "id": "formula", "bloque": "05", "tipo": "info", "titulo": "La fórmula: Quién · Qué · Para qué · Cómo", "instruccion": "Cuatro preguntas antes de escribir. El Constructor de esta página te lleva paso a paso.", "accion": { "tipo": "practicar", "modo": "constructor" }, "lamina": 51 },
+    { "id": "repreguntas", "bloque": "05", "tipo": "info", "titulo": "La primera respuesta es un borrador", "instruccion": "Después, conversa: “Hazlo más corto.” · “Dame 3 opciones.” · “¿Qué le falta?” · “Ahora en inglés.” En el asistente de esta página son los botones debajo de cada respuesta.", "accion": { "tipo": "practicar", "modo": "chat" }, "lamina": 53 },
+    { "id": "truco", "bloque": "05", "tipo": "info", "titulo": "El mejor truco: que ella te pregunte", "instruccion": "Agrégalo al final de cualquier petición.", "accion": { "tipo": "prompt", "promptId": "truco" }, "lamina": 54 },
+    { "id": "primera-instruccion", "bloque": "05", "tipo": "ejercicio", "titulo": "Tu primera instrucción de trabajo", "instruccion": "Piensa en una tarea que te quita tiempo cada semana y escríbela con la fórmula. Mejórala con dos repreguntas. Solo respeta el semáforo: nada de contraseñas ni datos sensibles.", "accion": { "tipo": "practicar", "modo": "constructor" }, "lamina": 55 },
+    { "id": "sorpresa", "bloque": "05", "tipo": "participa", "titulo": "¿Qué te sorprendió?", "instruccion": "Compártelo con el grupo en una frase.", "accion": { "tipo": "votacion", "votacionId": "sorpresa" }, "lamina": 55 },
+
+    { "id": "semaforo", "bloque": "06", "tipo": "participa", "titulo": "El semáforo", "instruccion": "8 casos, 2 minutos. ¿Verde, amarillo o rojo?", "accion": { "tipo": "semaforo" }, "lamina": 58 },
+    { "id": "reto", "bloque": "06", "tipo": "info", "titulo": "Tu reto: 7 días", "instruccion": "Úsala una vez al día durante una semana. Agrégalo a tu calendario desde “Me llevo”.", "accion": { "tipo": "mellevo", "seccion": "reto" }, "lamina": 61 },
+    { "id": "material", "bloque": "06", "tipo": "info", "titulo": "Todo esto te lo llevas", "instruccion": "La guía de bolsillo, las instrucciones y la presentación viven en “Me llevo”.", "accion": { "tipo": "mellevo", "seccion": "material" }, "lamina": 62 },
+    { "id": "preguntas", "bloque": "06", "tipo": "participa", "titulo": "¿Preguntas?", "instruccion": "Escribe la tuya (es anónima) o vota las de los demás.", "accion": { "tipo": "mellevo", "seccion": "preguntas" }, "lamina": 64 },
+    { "id": "evaluacion", "bloque": "06", "tipo": "participa", "titulo": "Gracias. Antes de irte…", "instruccion": "Tres preguntas rápidas para mejorar el curso.", "accion": { "tipo": "mellevo", "seccion": "evaluacion" }, "lamina": 65 }
+  ],
+  "grupos": [
+    { "id": "02", "nombre": "Las herramientas" },
+    { "id": "03", "nombre": "La IA en tu vida" },
+    { "id": "04", "nombre": "La IA en tu trabajo" },
+    { "id": "05", "nombre": "La fórmula, el truco y las repreguntas" }
+  ],
+  "prompts": [
+    { "id": "comparar", "bloque": "02", "titulo": "Misma pregunta, dos asistentes", "texto": "Explícame en 5 líneas qué es la inflación y cómo afecta a mi quincena.", "truco": "Escríbela igual en ChatGPT y en Gemini y compara. Ninguna es “la correcta”: elige la que más te sirva." },
+
+    { "id": "preguntar", "bloque": "03", "titulo": "Preguntar", "texto": "Explícame la inflación como si tuviera 12 años, con el ejemplo del precio de las tortillas.", "truco": "No es un buscador: es una conversación. Sigue con “¿Y por qué sube?” o “Dame otro ejemplo.”" },
+    { "id": "imagen", "bloque": "03", "titulo": "Crear una imagen", "texto": "Haz una invitación para el cumpleaños 7 de Sofía: tema dinosaurios, sábado a las 4 pm, colores verde y naranja.", "truco": "Entre más detalles le das, más se parece a lo que imaginas. Si no te convence: “Más alegre.” · “Sin texto.” · “Estilo acuarela.”", "soloApp": "imagen" },
+    { "id": "aprender", "bloque": "03", "titulo": "Aprender (con voz)", "texto": "Platica conmigo en inglés como si fueras el mesero de un restaurante. Corrígeme con amabilidad.", "truco": "Usa el modo de voz: el ícono de la onda junto a donde escribes.", "soloApp": "voz" },
+    { "id": "traducir", "bloque": "03", "titulo": "Traducir (con la cámara)", "texto": "¿Qué es cada platillo y cuál me recomiendas si no como picante?", "nota": "Primero toma una foto de un menú en otro idioma.", "truco": "Sirve igual para una etiqueta, un manual o un letrero.", "soloApp": "cámara" },
+    { "id": "recibo", "bloque": "03", "titulo": "Entender un documento (con foto)", "texto": "Explícame este recibo: ¿por qué subió y qué puedo hacer para pagar menos?", "nota": "Primero toma una foto de tu recibo de luz.", "truco": "No necesitas tapar nada si usas una cuenta con el entrenamiento desactivado (mira “Me llevo”).", "soloApp": "cámara" },
+    { "id": "menu", "bloque": "03", "titulo": "Organizarte", "texto": "Arma el menú de la semana para 4 personas, sin gastar más de $1,500, y dame la lista del súper por pasillo.", "truco": "Ajústalo: “Sin cerdo.” · “Algo rápido entre semana.”" },
+
+    { "id": "correo", "bloque": "04", "titulo": "Correo difícil", "texto": "Redacta una respuesta cordial a un cliente molesto por un retraso. Ofrece una disculpa y una nueva fecha, sin prometer descuentos.", "truco": "Dale los datos reales: entre más contexto, mejor. Y luego: “Más corto.” · “Más formal.” · “En inglés.” Tú revisas antes de enviar." },
+    { "id": "minuta", "bloque": "04", "titulo": "De notas a minuta", "texto": "Convierte estas notas en una minuta con acuerdos, responsables y fechas.", "nota": "Después de la instrucción, pega tus notas tal como las tengas.", "ejemplo": "junta lunes ventas. laura manda la cotizacion a ferreteria del norte antes del viernes. pedro dice que falta revisar inventario de tornilleria, lo ve el lunes. ana agenda seguimiento con el cliente para el 15. quedo pendiente definir quien cubre a pedro en vacaciones", "truco": "Escribe tus notas como salgan. Ella las ordena." },
+    { "id": "documento", "bloque": "04", "titulo": "Resumir un documento", "texto": "Resume este documento en 5 puntos y dime qué me toca hacer a mí.", "nota": "En tu app, adjunta el PDF. Aquí puedes pegar el texto.", "ejemplo": "POLÍTICA DE VACACIONES 2027. A partir del 1 de enero, las vacaciones se solicitan en el portal de Personas con al menos 15 días naturales de anticipación. Cada jefe directo aprueba o rechaza en un máximo de 3 días hábiles. No pueden coincidir de vacaciones más de dos personas de la misma área. Los días no tomados al 31 de diciembre no se acumulan, salvo autorización escrita de Dirección. En temporada alta (noviembre y diciembre) el máximo es de 5 días hábiles seguidos. Antes de salir, cada persona debe dejar por escrito sus pendientes y quién la cubre.", "truco": "Pídele la página de donde lo sacó, y verifica." },
+    { "id": "excel", "bloque": "04", "titulo": "Fórmula de Excel", "texto": "Necesito una fórmula de Excel que sume las ventas de enero solo de la vendedora Laura. Los nombres están en la columna A, el mes en la B y las ventas en la C.", "truco": "Pídele que te explique la fórmula. Así la próxima la haces tú." },
+    { "id": "presentacion", "bloque": "04", "titulo": "Estructura de una presentación", "texto": "Dame la estructura de una presentación de 5 láminas para explicarle a mi equipo el nuevo proceso de vacaciones.", "truco": "Úsala para empezar. El diseño y los datos finales los pones tú." },
+
+    { "id": "formula", "bloque": "05", "titulo": "La fórmula completa", "texto": "Eres mi asistente. Escribe un correo para pedirle a mi jefa 3 días de vacaciones, del 22 al 24 de diciembre. Quiero que vea que todo queda cubierto: Juan atenderá mis pendientes. Tono cordial, máximo 6 líneas.", "truco": "Quién · Qué · Para qué · Cómo. Compárala con la versión vaga: “Escribe un correo para pedir vacaciones.”" },
+    { "id": "truco", "bloque": "05", "titulo": "El mejor truco", "texto": "Antes de responder, hazme las preguntas que necesites para hacerlo bien.", "truco": "Agrégalo al final de cualquier petición. Te hará 3 o 4 preguntas y su respuesta saldrá a tu medida.", "ejemplo": "Quiero organizar la posada de mi oficina." },
+    { "id": "repreguntas", "bloque": "05", "titulo": "Las repreguntas", "texto": "Hazlo más corto.\nDame 3 opciones.\n¿Qué le falta?\nAhora en inglés.", "truco": "La primera respuesta es un borrador. La tercera, normalmente, es la buena.", "soloCopiar": true }
+  ],
+  "repreguntas": ["Hazlo más corto", "Dame 3 opciones", "¿Qué le falta?", "Ahora en inglés"],
+  "truco": "Antes de responder, hazme las preguntas que necesites para hacerlo bien.",
+  "constructor": {
+    "pasos": [
+      { "id": "quien", "nombre": "Quién", "pregunta": "¿Qué papel quieres que haga?", "ejemplo": "Eres mi asistente." },
+      { "id": "que", "nombre": "Qué", "pregunta": "¿Qué necesitas exactamente?", "ejemplo": "Escribe un correo para pedirle a mi jefa 3 días de vacaciones, del 22 al 24 de diciembre." },
+      { "id": "paraque", "nombre": "Para qué", "pregunta": "¿Para quién es y qué debe lograr?", "ejemplo": "Quiero que vea que todo queda cubierto: Juan atenderá mis pendientes." },
+      { "id": "como", "nombre": "Cómo", "pregunta": "¿Cómo lo quieres recibir?", "ejemplo": "Tono cordial, máximo 6 líneas." }
+    ],
+    "chipsComo": ["Tono cordial", "Máximo 6 líneas", "En lista", "En tabla"],
+    "ideas": [
+      "Responde este correo con tono cordial y firme: ",
+      "Convierte estas notas en una lista de pendientes: ",
+      "Explícame esta fórmula de Excel paso a paso: ",
+      "Corrige la ortografía y mejora este texto: ",
+      "Dame 5 ideas para presentar este tema a mi equipo: ",
+      "Resume este texto en 3 puntos: ",
+      "Prepara las preguntas para una entrevista de trabajo de ",
+      "Traduce este mensaje al inglés, en tono profesional: "
+    ]
+  },
+  "votaciones": [
+    { "id": "sondeo", "tipo": "sino", "titulo": "Antes de empezar", "lamina": 5, "preguntas": [
+      { "id": "oido", "texto": "He oído de ChatGPT, Meta AI o Gemini" },
+      { "id": "usado", "texto": "La he usado alguna vez" },
+      { "id": "semana", "texto": "La uso cada semana" },
+      { "id": "desconfianza", "texto": "Me da un poco de desconfianza", "color": "amarillo" }
+    ], "remate": "Las cuatro respuestas son normales." },
+    { "id": "frase", "tipo": "palabra", "titulo": "Completa la frase", "lamina": 12, "frase": "En Nuevo Laredo, en agosto, hace mucho ____", "max": 20,
+      "ia": [ { "palabra": "calor", "pct": 86 }, { "palabra": "viento", "pct": 7 }, { "palabra": "frío", "pct": 4 }, { "palabra": "tráfico", "pct": 3 } ],
+      "remate": "Ustedes predijeron igual que la IA." },
+    { "id": "area", "tipo": "unica", "titulo": "¿En qué área trabajas?", "lamina": 40, "opciones": ["Dirección", "Comercial", "Operación", "Administración y Finanzas", "Personas", "Otra"] },
+    { "id": "sorpresa", "tipo": "texto", "titulo": "¿Qué te sorprendió?", "lamina": 55, "max": 120 }
+  ],
+  "semaforo": [
+    { "id": "reglamento", "caso": "Resumir el reglamento interno", "respuesta": "verde", "explicacion": "Adelante: es un documento de trabajo normal. Mejor aún en la cuenta de la empresa." },
+    { "id": "excel-ventas", "caso": "Analizar el Excel de ventas del mes", "respuesta": "verde", "explicacion": "Adelante: Excel y reportes son justo para lo que sirve. Tú revisas los totales." },
+    { "id": "contrasena", "caso": "Pegar la contraseña del correo para que redacte", "respuesta": "rojo", "explicacion": "Nunca: contraseñas y accesos no se le dan a ninguna IA. Tampoco los necesita para redactar." },
+    { "id": "contrato", "caso": "Subir un contrato con tu cuenta personal sin cambiar ajustes", "respuesta": "amarillo", "explicacion": "Ajusta esto: desactiva el entrenamiento o usa la cuenta de la empresa. El problema no es el contrato, es la cuenta." },
+    { "id": "app-anuncio", "caso": "Usar una app de IA gratis que encontraste en un anuncio", "respuesta": "rojo", "explicacion": "Nunca: no sabes quién está detrás ni qué hace con lo que subes. Usa las apps oficiales." },
+    { "id": "enlace", "caso": "Compartir el enlace público del chat con un cliente", "respuesta": "amarillo", "explicacion": "Ajusta esto: un enlace público lo puede abrir cualquiera. Mejor copia el texto, revísalo y envíalo tú." },
+    { "id": "tarjeta", "caso": "Pegar los datos de la tarjeta de un cliente", "respuesta": "rojo", "explicacion": "Nunca: datos bancarios y de tarjetas no entran, en ninguna cuenta." },
+    { "id": "vacante", "caso": "Redactar una vacante", "respuesta": "verde", "explicacion": "Adelante: es información que de todos modos será pública." }
+  ],
+  "entrenamiento": {
+    "verificado": "noviembre de 2026 (borrador: verificar antes de cada curso)",
+    "apps": [
+      { "app": "ChatGPT", "pasos": ["Toca tu nombre o foto de perfil y entra a Configuración.", "Abre Controles de datos.", "Apaga “Mejorar el modelo para todos”."] },
+      { "app": "Gemini", "pasos": ["Toca tu foto de perfil y entra a Actividad en las apps de Gemini.", "Toca el botón Desactivar.", "Elige “Desactivar” (o “Desactivar y borrar actividad”)."] },
+      { "app": "Claude", "pasos": ["Toca tu nombre y entra a Configuración.", "Abre Privacidad.", "Apaga “Ayudar a mejorar Claude”."] }
+    ]
+  },
+  "reto": [
+    { "dia": 1, "titulo": "Pregúntale algo que no entiendas", "instruccion": "Explícame [tema] como si tuviera 12 años, con un ejemplo de la vida diaria." },
+    { "dia": 2, "titulo": "Escribe un correo con ella", "instruccion": "Eres mi asistente. Escribe un correo para [persona] sobre [asunto]. Quiero lograr [objetivo]. Tono cordial, máximo 6 líneas." },
+    { "dia": 3, "titulo": "Crea una imagen", "instruccion": "Haz una imagen de [qué quieres], con estilo [acuarela, foto, caricatura] y colores [colores]." },
+    { "dia": 4, "titulo": "Resume algo largo", "instruccion": "Resume este texto en 5 puntos y dime qué me toca hacer a mí: [pega el texto o adjunta el archivo]" },
+    { "dia": 5, "titulo": "Pídele una fórmula de Excel", "instruccion": "Necesito una fórmula de Excel que [lo que quieres calcular]. Mis datos están en [columnas]. Explícame qué hace cada parte." },
+    { "dia": 6, "titulo": "Organiza tu semana", "instruccion": "Estos son mis pendientes de la semana: [lista]. Ordénalos por prioridad y repártelos de lunes a viernes. Antes de responder, hazme las preguntas que necesites." },
+    { "dia": 7, "titulo": "Enséñale a alguien", "instruccion": "Dame 3 ejemplos sencillos para enseñarle a [mi mamá, un compañero] a usar la inteligencia artificial por primera vez." }
+  ],
+  "material": [
+    { "id": "guia", "titulo": "Guía de bolsillo", "descripcion": "La fórmula, las herramientas y el semáforo en una página.", "archivo": "/curso/guia-de-bolsillo.pdf", "pagina": "/cursoIA/guia" },
+    { "id": "presentacion", "titulo": "La presentación", "descripcion": "Para repasarla o compartirla con quien no vino.", "archivo": "/curso/presentacion.pdf" }
+  ],
+  "evaluacion": {
+    "intereses": ["IA en Excel", "IA para ventas", "Gobierno y seguridad de IA", "Otro"]
+  }
+}

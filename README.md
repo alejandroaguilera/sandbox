@@ -14,6 +14,9 @@ Next.js (App Router) + Prisma 6 + Postgres, desplegado en Dokploy. n8n en `sandb
 | `/material` | Asistentes (QR) | Captura de lead + descarga de PDFs |
 | `/privacidad` | — | Aviso de privacidad simplificado |
 | `/admin` | Alejandro | Leads + CSV, moderación de sala, reset de demos, modo de flujo |
+| `/cursoIA` | Asistentes (QR) | Curso "IA desde cero": Ahora · Practicar · Instrucciones · Me llevo |
+| `/cursoIA/control` | Alejandro (celular) | Momento actual, votaciones, proyector, pausa de IA, sesiones, CSV |
+| `/cursoIA/en-vivo` | Proyector | QR, votaciones en vivo, semáforo y preguntas más votadas |
 
 ## Bot de Telegram (@agendaserviciosbot)
 
@@ -24,6 +27,22 @@ Menú fijo con botones + comandos (`/datos`, `/agendar`, `/hoy`, `/manana`, `/cl
 - Webhook: `POST /api/telegram`, validado con `TELEGRAM_WEBHOOK_SECRET`. El webhook y el menú se registran solos al arrancar.
 - Código: `lib/telegram.ts` (Bot API), `lib/bot.ts` (menú, estado por chat), `lib/agente.ts` (Grok + herramientas), `lib/grafica-png.ts`.
 - El historial de cada chat vive en memoria (45 min); se pierde al redeployar. `/nueva` lo borra a mano.
+
+## Curso "IA desde cero" (`/cursoIA`)
+
+Companion del curso en el celular de cada asistente. Vive aparte del hub (`/`) y de las demos: no comparte rutas ni tablas.
+
+- **Contenido:** todo el texto (bloques, momentos, instrucciones, votaciones, semáforo, reto, rutas para desactivar el
+  entrenamiento) está en `content/curso-ia.json`. Se edita ahí, sin tocar código; cada momento lleva su número de `lamina`.
+- **Sesiones:** cada impartición es una sesión (cliente, fecha, código). Se crean y activan en `/cursoIA/control`
+  (misma contraseña que `/admin`). Solo una está activa a la vez.
+- **Asistente de IA:** `POST /api/curso/ia`, en streaming. No hay tabla de mensajes ni se registra el contenido: solo conteos
+  (`CursoUsoIA`, `CursoGastoDia`). Límites: `CURSO_AI_MAX_MENSAJES` por celular, 6 por minuto, 4,000 caracteres, tope diario
+  `CURSO_AI_TOPE_DIARIO_USD`. Un filtro bloquea tarjetas, CLABE y contraseñas antes de llamar al modelo.
+- **Plan B:** en el control, "Pausar asistente de IA" y "Modo sin IA" dejan la biblioteca y el constructor solo con Copiar.
+- **Material:** los PDF van en `public/curso/` (`presentacion.pdf`, `guia-de-bolsillo.pdf`). Si falta la guía en PDF,
+  "Me llevo" enlaza a `/cursoIA/guia` (una página, imprimible).
+- `/cursoia`, `/curso-ia` y `/curso` redirigen 308 a `/cursoIA` (`proxy.ts`).
 
 ## Operación
 

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Pie } from "@/components/Pie";
 
 export const metadata: Metadata = {
   title: "Sandbox · MrHapps",
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-MX">
       <body>
         <main>{children}</main>
-        <footer className="pie">MrHapps · Workshop Coparmex Nuevo Laredo</footer>
+        <Pie />
       </body>
     </html>
   );

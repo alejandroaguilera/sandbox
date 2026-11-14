@@ -177,3 +177,103 @@ model Reserva {
 
   @@index([fecha])
 }
+
+// ---------- Curso "IA desde cero" (/cursoIA) ----------
+// Cada impartición es una sesión. No existe tabla de mensajes de chat: es intencional.
+model CursoSesion {
+  id         String   @id @default(cuid())
+  codigo     String   @unique // p. ej. "garza-rechy-2026-11"
+  cliente    String
+  fecha      DateTime
+  wifi       String? // red de invitados que se muestra antes de empezar
+  activa     Boolean  @default(false)
+  momentoId  String? // momento "Ahora"; null = aún no empieza
+  iaPausada  Boolean  @default(false)
+  sinIA      Boolean  @default(false) // "Modo sin IA": solo Copiar
+  proyector  String   @default("qr") // "qr" | "v:<clave>" | "semaforo" | "preguntas"
+  epoca      Int      @default(0) // sube en cada reinicio: los celulares borran su estado local
+  createdAt  DateTime @default(now())
+}
+
+model CursoVotacion {
+  id       String  @id @default(cuid())
+  sesionId String
+  clave    String // "sondeo", "frase", "area", "sorpresa"
+  abierta  Boolean @default(false)
+
+  @@unique([sesionId, clave])
+}
+
+model CursoVoto {
+  id          String   @id @default(cuid())
+  votacionId  String
+  dispositivo String // cookie anónima
+  pregunta    String   @default("") // para el sondeo de 4 preguntas
+  valor       String   @db.VarChar(120)
+  oculto      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@unique([votacionId, dispositivo, pregunta])
+}
+
+model CursoPregunta {
+  id         String   @id @default(cuid())
+  sesionId   String
+  texto      String   @db.VarChar(200)
+  votos      Int      @default(0)
+  oculta     Boolean  @default(false)
+  respondida Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([sesionId, createdAt])
+}
+
+model CursoPreguntaVoto {
+  preguntaId  String
+  dispositivo String
+
+  @@id([preguntaId, dispositivo])
+}
+
+model CursoSemaforo {
+  id          String  @id @default(cuid())
+  sesionId    String
+  dispositivo String
+  tarjeta     String
+  acierto     Boolean
+
+  @@unique([sesionId, dispositivo, tarjeta])
+}
+
+// Solo conteos, NUNCA contenido.
+model CursoUsoIA {
+  id            String   @id @default(cuid())
+  sesionId      String
+  dispositivo   String
+  mensajes      Int      @default(0)
+  tokensEntrada Int      @default(0)
+  tokensSalida  Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  @@unique([sesionId, dispositivo])
+}
+
+// Gasto estimado por día (para el tope diario). Solo conteos.
+model CursoGastoDia {
+  dia           String @id @db.VarChar(10) // YYYY-MM-DD (UTC)
+  mensajes      Int    @default(0)
+  tokensEntrada Int    @default(0)
+  tokensSalida  Int    @default(0)
+}
+
+model CursoEvaluacion {
+  id          String   @id @default(cuid())
+  sesionId    String
+  dispositivo String
+  utilidad    Int
+  valioso     String?  @db.VarChar(300)
+  interes     String?
+  createdAt   DateTime @default(now())
+
+  @@unique([sesionId, dispositivo])
+}
